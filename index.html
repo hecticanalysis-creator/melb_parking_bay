@@ -11,774 +11,769 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
 <style>
-:root {
-  --bg:#0a0a0a; --surface:#141414; --surface2:#1c1c1c; --surface3:#222;
-  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
-  --text:#f0ede8; --muted:#6b6b6b; --muted2:#999;
-  --green:#00e676; --green-dim:rgba(0,230,118,0.12);
-  --red:#ff4f4f;   --red-dim:rgba(255,79,79,0.12);
-  --amber:#ffb300; --amber-dim:rgba(255,179,0,0.12);
-  --blue:#4fc3f7;  --blue-dim:rgba(79,195,247,0.12);
-  --purple:#ce93d8;--purple-dim:rgba(206,147,216,0.12);
-  --accent:#e8ff47;
-  --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif;
-  --r:12px; --rs:8px;
+:root{
+  --bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#222;
+  --b0:rgba(255,255,255,0.06);--b1:rgba(255,255,255,0.1);--b2:rgba(255,255,255,0.16);
+  --tx:#f0ede8;--mu:#6b6b6b;--mu2:#999;
+  --gn:#00e676;--gnd:rgba(0,230,118,.12);
+  --rd:#ff4f4f;--rdd:rgba(255,79,79,.12);
+  --am:#ffb300;--amd:rgba(255,179,0,.12);
+  --bl:#4fc3f7;--bld:rgba(79,195,247,.12);
+  --pu:#ce93d8;--pud:rgba(206,147,216,.12);
+  --ac:#e8ff47;
+  --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+  --r:12px;--rs:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;overflow:hidden}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:14px;overflow:hidden}
 #app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto}
 
 /* header */
 header{padding:12px 14px 0;flex-shrink:0}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.wordmark{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
-.live-badge{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted)}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.08em;color:var(--ac);text-transform:uppercase}
+.badge{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--mu)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--gn);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-.spinning{animation:spin .7s linear infinite;display:inline-block}
+.spin{animation:spin .7s linear infinite;display:inline-block}
 
-/* tab nav */
-.tab-nav{display:flex;gap:4px;margin-bottom:10px;background:var(--surface);border-radius:var(--rs);padding:3px;border:0.5px solid var(--border)}
-.tab-btn{flex:1;font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 4px;border:none;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;transition:all .15s;text-transform:uppercase}
-.tab-btn.active{background:var(--surface2);color:var(--text);border:0.5px solid var(--border2)}
+/* tabs */
+.tabs{display:flex;gap:3px;background:var(--s1);border-radius:var(--rs);padding:3px;border:0.5px solid var(--b0);margin-bottom:10px}
+.tab{flex:1;font-family:var(--mono);font-size:10px;letter-spacing:.04em;padding:6px 2px;border:none;background:transparent;color:var(--mu);cursor:pointer;border-radius:6px;transition:all .15s;text-transform:uppercase}
+.tab.on{background:var(--s2);color:var(--tx);border:0.5px solid var(--b1)}
 
-/* stats */
+/* stats row */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px}
-.stat{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rs);padding:8px 10px}
-.stat-label{font-size:10px;font-family:var(--mono);letter-spacing:.05em;color:var(--muted);text-transform:uppercase;margin-bottom:2px}
-.stat-value{font-size:19px;font-weight:300;font-family:var(--mono);line-height:1}
-.stat-value.green{color:var(--green)} .stat-value.red{color:var(--red)} .stat-value.amber{color:var(--amber)}
-.stat-sub{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+.stat{background:var(--s1);border:0.5px solid var(--b0);border-radius:var(--rs);padding:8px 10px}
+.slabel{font-size:10px;font-family:var(--mono);letter-spacing:.05em;color:var(--mu);text-transform:uppercase;margin-bottom:2px}
+.sval{font-size:19px;font-weight:300;font-family:var(--mono);line-height:1}
+.sval.g{color:var(--gn)}.sval.r{color:var(--rd)}.sval.a{color:var(--am)}
+.ssub{font-size:10px;color:var(--mu);margin-top:2px;font-family:var(--mono)}
 
-/* suburb pills */
-.scroll-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;margin-bottom:7px;scrollbar-width:none}
-.scroll-row::-webkit-scrollbar{display:none}
-.s-pill{flex-shrink:0;font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.s-pill.active{background:var(--accent);color:#0a0a0a;border-color:var(--accent);font-weight:500}
-.s-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+/* pill row */
+.pills{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;margin-bottom:8px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex-shrink:0;font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:999px;border:0.5px solid var(--b0);background:var(--s1);color:var(--mu);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.pill.on{background:var(--ac);color:#0a0a0a;border-color:var(--ac);font-weight:500}
+.pdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 
-/* filter tags */
-.filter-section{margin-bottom:8px}
-.filter-label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
-.tag-row{display:flex;gap:5px;flex-wrap:wrap}
-.tag{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
-.tag:active{transform:scale(.96)}
-.tag.active.status-all   {background:var(--surface2);color:var(--text);border-color:var(--border2)}
-.tag.active.status-free  {background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.35)}
-.tag.active.status-occ   {background:var(--red-dim);color:var(--red);border-color:rgba(255,79,79,.35)}
-.tag.active.type-free    {background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.35)}
-.tag.active.type-paid    {background:var(--amber-dim);color:var(--amber);border-color:rgba(255,179,0,.35)}
-.tag.active.type-dis     {background:var(--blue-dim);color:var(--blue);border-color:rgba(79,195,247,.35)}
-.tag.active.type-load    {background:var(--purple-dim);color:var(--purple);border-color:rgba(206,147,216,.35)}
-.tag.active.dur-any      {background:var(--surface2);color:var(--text);border-color:var(--border2)}
-.tag.active.dur-30       {background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.35)}
-.tag.active.dur-1h       {background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.35)}
-.tag.active.dur-2h       {background:var(--amber-dim);color:var(--amber);border-color:rgba(255,179,0,.35)}
-.tag.active.dur-long     {background:var(--red-dim);color:var(--red);border-color:rgba(255,79,79,.35)}
+/* filter chips */
+.fgroup{margin-bottom:8px}
+.flabel{font-family:var(--mono);font-size:10px;color:var(--mu);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:999px;border:0.5px solid var(--b0);background:var(--s1);color:var(--mu);cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip:active{transform:scale(.96)}
+.chip.on.cAll  {background:var(--s2);color:var(--tx);border-color:var(--b2)}
+.chip.on.cFree {background:var(--gnd);color:var(--gn);border-color:rgba(0,230,118,.35)}
+.chip.on.cOcc  {background:var(--rdd);color:var(--rd);border-color:rgba(255,79,79,.35)}
+.chip.on.tAll  {background:var(--s2);color:var(--tx);border-color:var(--b2)}
+.chip.on.tFree {background:var(--gnd);color:var(--gn);border-color:rgba(0,230,118,.35)}
+.chip.on.tPaid {background:var(--amd);color:var(--am);border-color:rgba(255,179,0,.35)}
+.chip.on.tDis  {background:var(--bld);color:var(--bl);border-color:rgba(79,195,247,.35)}
+.chip.on.tLoad {background:var(--pud);color:var(--pu);border-color:rgba(206,147,216,.35)}
+.chip.on.d30   {background:var(--gnd);color:var(--gn);border-color:rgba(0,230,118,.35)}
+.chip.on.d1h   {background:var(--gnd);color:var(--gn);border-color:rgba(0,230,118,.35)}
+.chip.on.d2h   {background:var(--amd);color:var(--am);border-color:rgba(255,179,0,.35)}
+.chip.on.dLong {background:var(--rdd);color:var(--rd);border-color:rgba(255,79,79,.35)}
+.chip.on.dAny  {background:var(--s2);color:var(--tx);border-color:var(--b2)}
 
 /* map */
-#map-wrap{flex:1;position:relative;margin:0 14px;border-radius:var(--r);overflow:hidden;border:0.5px solid var(--border);min-height:0}
+#mapWrap{flex:1;position:relative;margin:0 14px;border-radius:var(--r);overflow:hidden;border:0.5px solid var(--b0);min-height:0}
 #map{width:100%;height:100%}
 .leaflet-tile{filter:brightness(.7) saturate(.5) hue-rotate(195deg)}
 .leaflet-control-zoom{display:none}
 .leaflet-control-attribution{background:rgba(10,10,10,.75)!important;color:#444!important;font-size:9px!important}
 .leaflet-control-attribution a{color:#555!important}
-.leaflet-popup-content-wrapper{background:#1a1a1a!important;border:0.5px solid rgba(255,255,255,.15)!important;border-radius:10px!important;box-shadow:0 8px 32px rgba(0,0,0,.6)!important;color:var(--text)!important;font-family:var(--mono)!important;font-size:12px!important;padding:0!important}
-.leaflet-popup-content{margin:0!important;min-width:190px}
+.leaflet-popup-content-wrapper{background:#1a1a1a!important;border:0.5px solid rgba(255,255,255,.15)!important;border-radius:10px!important;box-shadow:0 8px 32px rgba(0,0,0,.6)!important;color:var(--tx)!important;font-family:var(--mono)!important;font-size:12px!important;padding:0!important}
+.leaflet-popup-content{margin:0!important;min-width:200px!important}
 .leaflet-popup-tip-container{display:none}
-.leaflet-popup-close-button{color:#666!important;top:8px!important;right:10px!important;font-size:16px!important}
-.map-legend{position:absolute;bottom:10px;left:10px;z-index:10;background:rgba(10,10,10,.85);backdrop-filter:blur(8px);border-radius:var(--rs);padding:8px 10px;display:flex;flex-direction:column;gap:4px;border:0.5px solid var(--border)}
-.leg-row{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;color:var(--muted)}
-.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-#map-overlay{position:absolute;inset:0;background:var(--surface);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--muted);z-index:5;transition:opacity .3s;pointer-events:none}
-#map-overlay.hidden{opacity:0}
+.leaflet-popup-close-button{color:#666!important;top:8px!important;right:10px!important;font-size:16px!important;z-index:10}
+.mapLegend{position:absolute;bottom:10px;left:10px;z-index:10;background:rgba(10,10,10,.85);backdrop-filter:blur(8px);border-radius:var(--rs);padding:7px 10px;display:flex;flex-direction:column;gap:4px;border:0.5px solid var(--b0)}
+.legRow{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;color:var(--mu)}
+.legDot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+#mapOverlay{position:absolute;inset:0;background:var(--s1);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--mu);z-index:5;transition:opacity .3s;pointer-events:none}
+#mapOverlay.gone{opacity:0}
 
-/* popup card */
-.popup-card{padding:12px 14px}
-.popup-status{font-size:13px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.popup-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.popup-type{font-size:12px;font-weight:500;color:var(--text);margin-bottom:3px}
-.popup-desc{font-size:11px;color:var(--muted2);margin-bottom:6px;line-height:1.5}
-.popup-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
-.popup-tag{font-size:10px;padding:2px 7px;border-radius:999px;font-family:var(--mono)}
-.popup-tag.paid   {background:var(--amber-dim);color:var(--amber)}
-.popup-tag.free   {background:var(--green-dim);color:var(--green)}
-.popup-tag.dis    {background:var(--blue-dim);color:var(--blue)}
-.popup-tag.load   {background:var(--purple-dim);color:var(--purple)}
-.popup-tag.nopark {background:var(--red-dim);color:var(--red)}
-.popup-windows{font-size:10px;color:var(--muted);line-height:1.7;border-top:0.5px solid var(--border);padding-top:6px;margin-top:2px}
-.popup-row{display:flex;justify-content:space-between;gap:8px}
-.popup-row span:last-child{color:var(--muted2);text-align:right}
+/* popup */
+.popup{padding:12px 14px 10px}
+.pStatus{font-size:13px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.pDot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.pType{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:2px}
+.pDesc{font-size:11px;color:var(--mu2);margin-bottom:7px;line-height:1.6}
+.pTags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.pTag{font-size:10px;padding:2px 7px;border-radius:999px;font-family:var(--mono)}
+.pTag.paid{background:var(--amd);color:var(--am)}
+.pTag.free{background:var(--gnd);color:var(--gn)}
+.pTag.dis{background:var(--bld);color:var(--bl)}
+.pTag.load{background:var(--pud);color:var(--pu)}
+.pTag.nop{background:var(--rdd);color:var(--rd)}
+.pTag.dur{background:var(--s2);color:var(--mu2)}
+.pRules{border-top:0.5px solid var(--b0);padding-top:7px;margin-top:2px}
+.pRule{font-size:10px;color:var(--mu);line-height:1.8;padding:2px 0;border-bottom:0.5px solid var(--b0)}
+.pRule:last-child{border-bottom:none}
+.pRule strong{color:var(--mu2)}
+.pMeta{display:flex;justify-content:space-between;font-size:10px;color:var(--mu);margin-top:5px;padding-top:5px;border-top:0.5px solid var(--b0)}
 
-/* bottom sheet */
-#sheet{flex-shrink:0;background:var(--surface);border-top:0.5px solid var(--border);border-radius:var(--r) var(--r) 0 0;overflow:hidden;z-index:20}
-.sheet-handle{display:flex;align-items:center;justify-content:space-between;padding:9px 14px 7px;cursor:pointer;user-select:none}
-.sheet-grip{width:32px;height:3px;background:var(--border);border-radius:2px;margin-bottom:5px}
-.sheet-title{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
-.sheet-toggle{font-size:11px;color:var(--muted);font-family:var(--mono)}
-#zone-list{overflow-y:auto;max-height:170px;padding-bottom:10px}
-.z-row{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:0.5px solid var(--border)}
-.z-row:last-child{border-bottom:none}
-.z-name{font-family:var(--mono);font-size:12px;color:var(--text);margin-bottom:1px}
-.z-count{font-size:10px;color:var(--muted);font-family:var(--mono)}
-.z-right{display:flex;align-items:center;gap:7px}
-.bar{width:46px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
-.bar-fill{height:100%;border-radius:2px}
+/* sheet */
+#sheet{flex-shrink:0;background:var(--s1);border-top:0.5px solid var(--b0);border-radius:var(--r) var(--r) 0 0;overflow:hidden;z-index:20}
+.sheetHdr{display:flex;align-items:center;justify-content:space-between;padding:9px 14px 7px;cursor:pointer;user-select:none}
+.grip{width:32px;height:3px;background:var(--b0);border-radius:2px;margin-bottom:5px}
+.sheetTitle{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--mu);text-transform:uppercase}
+.sheetArrow{font-size:11px;color:var(--mu);font-family:var(--mono)}
+#zoneList{overflow-y:auto;max-height:160px;padding-bottom:10px}
+.zRow{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:0.5px solid var(--b0)}
+.zRow:last-child{border-bottom:none}
+.zName{font-family:var(--mono);font-size:12px;color:var(--tx);margin-bottom:1px}
+.zCnt{font-size:10px;color:var(--mu);font-family:var(--mono)}
+.zR{display:flex;align-items:center;gap:7px}
+.bar{width:46px;height:3px;background:var(--b0);border-radius:2px;overflow:hidden}
+.barFill{height:100%;border-radius:2px}
 .pct{font-family:var(--mono);font-size:11px;min-width:28px;text-align:right}
 
-/* best times tab */
-#tab-patterns{display:none;flex:1;overflow-y:auto;padding:0 14px 14px;min-height:0}
-#tab-patterns.active{display:block}
-.banner-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.best-banner{background:var(--green-dim);border:0.5px solid rgba(0,230,118,.25);border-radius:var(--r);padding:12px 14px}
-.best-banner-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--green);text-transform:uppercase;margin-bottom:4px}
-.best-banner-value{font-size:20px;font-weight:300;font-family:var(--mono);color:var(--green);margin-bottom:1px}
-.best-banner-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
-.worst-banner{background:var(--red-dim);border:0.5px solid rgba(255,79,79,.25);border-radius:var(--r);padding:12px 14px}
-.worst-banner-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--red);text-transform:uppercase;margin-bottom:4px}
-.worst-banner-value{font-size:20px;font-weight:300;font-family:var(--mono);color:var(--red);margin-bottom:1px}
-.worst-banner-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
-.section-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--muted);text-transform:uppercase;margin:12px 0 7px}
-.day-scroll{display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
-.day-scroll::-webkit-scrollbar{display:none}
-.day-btn{flex-shrink:0;font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
-.day-btn.active{background:var(--accent);color:#0a0a0a;border-color:var(--accent);font-weight:500}
-.heatmap{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:4px}
-.hm-cell{height:26px;border-radius:3px;cursor:pointer;transition:opacity .15s}
-.hm-cell:hover{opacity:.7}
-.hm-cell.selected{outline:2px solid var(--accent);outline-offset:1px}
-.hm-labels{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:12px}
-.hm-label{font-family:var(--mono);font-size:8px;color:var(--muted);text-align:center;overflow:hidden}
-.hour-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;transition:border-color .2s}
-.hour-card-time{font-family:var(--mono);font-size:18px;font-weight:300;margin-bottom:3px;transition:color .2s}
-.hour-card-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
-.day-summary{display:flex;flex-direction:column;gap:5px}
-.ds-row{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--surface);border-radius:var(--rs);border:0.5px solid var(--border);cursor:pointer}
-.ds-day{font-family:var(--mono);font-size:12px;color:var(--text);width:28px;flex-shrink:0}
-.ds-best{font-family:var(--mono);font-size:11px;color:var(--green);flex:1}
-.ds-bar-wrap{flex:2;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
-.ds-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),var(--amber),var(--red))}
-.ds-worst{font-family:var(--mono);font-size:11px;color:var(--red);text-align:right}
-.no-data{padding:32px 14px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.9}
+/* ── BAY INFO TAB ── */
+#tabInfo{display:none;flex:1;overflow-y:auto;min-height:0;padding:0 14px 14px}
+#tabInfo.on{display:block}
+.infoStats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.iStat{background:var(--s1);border:0.5px solid var(--b0);border-radius:var(--rs);padding:10px 12px}
+.iVal{font-size:22px;font-weight:300;font-family:var(--mono);line-height:1;margin-bottom:2px}
+.iLab{font-size:10px;font-family:var(--mono);color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.iSub{font-size:10px;color:var(--mu);margin-top:3px;font-family:var(--mono)}
+.secLabel{font-family:var(--mono);font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px}
+.typeList{display:flex;flex-direction:column;gap:6px}
+.typeRow{background:var(--s1);border:0.5px solid var(--b0);border-radius:var(--rs);padding:10px 12px;display:flex;align-items:center;gap:10px}
+.typeDot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.typeName{font-family:var(--mono);font-size:12px;color:var(--tx);flex:1}
+.typeCount{font-family:var(--mono);font-size:13px;font-weight:500}
+.typeDesc{font-size:10px;color:var(--mu);margin-top:2px;font-family:var(--mono)}
+.durList{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:14px}
+.durCard{background:var(--s1);border:0.5px solid var(--b0);border-radius:var(--rs);padding:9px 11px}
+.durVal{font-size:18px;font-weight:300;font-family:var(--mono);margin-bottom:2px}
+.durLab{font-size:10px;font-family:var(--mono);color:var(--mu);letter-spacing:.04em}
+.noInfo{padding:40px 14px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--mu);line-height:2}
+
+/* ── BEST TIMES TAB ── */
+#tabTimes{display:none;flex:1;overflow-y:auto;min-height:0;padding:0 14px 14px}
+#tabTimes.on{display:block}
+.bannerRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.bestBanner{background:var(--gnd);border:0.5px solid rgba(0,230,118,.25);border-radius:var(--r);padding:12px 14px}
+.bbLabel{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--gn);text-transform:uppercase;margin-bottom:4px}
+.bbVal{font-size:20px;font-weight:300;font-family:var(--mono);color:var(--gn);margin-bottom:1px}
+.bbSub{font-size:10px;color:var(--mu);font-family:var(--mono)}
+.worstBanner{background:var(--rdd);border:0.5px solid rgba(255,79,79,.25);border-radius:var(--r);padding:12px 14px}
+.wbLabel{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--rd);text-transform:uppercase;margin-bottom:4px}
+.wbVal{font-size:20px;font-weight:300;font-family:var(--mono);color:var(--rd);margin-bottom:1px}
+.wbSub{font-size:10px;color:var(--mu);font-family:var(--mono)}
+.secL{font-family:var(--mono);font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 7px}
+.dayRow{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px}
+.dayRow::-webkit-scrollbar{display:none}
+.dayBtn{flex-shrink:0;font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:999px;border:0.5px solid var(--b0);background:var(--s1);color:var(--mu);cursor:pointer;transition:all .15s}
+.dayBtn.on{background:var(--ac);color:#0a0a0a;border-color:var(--ac);font-weight:500}
+.hmap{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:4px}
+.hCell{height:26px;border-radius:3px;cursor:pointer;transition:opacity .15s}
+.hCell:hover{opacity:.7}
+.hCell.sel{outline:2px solid var(--ac);outline-offset:1px}
+.hLabs{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:12px}
+.hLab{font-family:var(--mono);font-size:8px;color:var(--mu);text-align:center;overflow:hidden}
+.hCard{background:var(--s1);border:0.5px solid var(--b0);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;transition:border-color .2s}
+.hTime{font-family:var(--mono);font-size:18px;font-weight:300;margin-bottom:3px;transition:color .2s}
+.hSub{font-size:11px;color:var(--mu);font-family:var(--mono)}
+.daySumm{display:flex;flex-direction:column;gap:5px}
+.dsRow{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--s1);border-radius:var(--rs);border:0.5px solid var(--b0);cursor:pointer}
+.dsDay{font-family:var(--mono);font-size:12px;color:var(--tx);width:28px;flex-shrink:0}
+.dsBest{font-family:var(--mono);font-size:11px;color:var(--gn);flex:1}
+.dsBar{flex:2;height:3px;background:var(--b0);border-radius:2px;overflow:hidden}
+.dsBarFill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gn),var(--am),var(--rd))}
+.dsWorst{font-family:var(--mono);font-size:11px;color:var(--rd);text-align:right}
+.noData{padding:32px 14px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--mu);line-height:1.9}
 
 /* footer */
-footer{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 10px;flex-shrink:0;background:var(--surface);gap:8px;border-top:0.5px solid var(--border)}
-.footer-status{font-family:var(--mono);font-size:10px;color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.refresh-btn{font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:999px;border:0.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;flex-shrink:0;transition:all .15s}
-.refresh-btn:active{background:var(--surface2);color:var(--text)}
+footer{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 10px;flex-shrink:0;background:var(--s1);gap:8px;border-top:0.5px solid var(--b0)}
+.fStatus{font-family:var(--mono);font-size:10px;color:var(--mu);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rfBtn{font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:999px;border:0.5px solid var(--b0);background:transparent;color:var(--mu);cursor:pointer;flex-shrink:0}
+.rfBtn:active{background:var(--s2);color:var(--tx)}
 
 /* loading */
 #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .4s}
-#loading.hidden{opacity:0;pointer-events:none}
-.spinner{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-.loading-text{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em}
-
-/* error */
-#err{display:none;margin:0 0 7px;padding:8px 11px;border-radius:var(--rs);background:var(--red-dim);border:0.5px solid rgba(255,79,79,.3);font-family:var(--mono);font-size:11px;color:var(--red);line-height:1.5}
-
-/* live tab wrapper */
-#tab-live{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
-#tab-live.hidden{display:none}
+#loading.gone{opacity:0;pointer-events:none}
+.spinner{width:26px;height:26px;border:2px solid var(--b0);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite}
+.loadTxt{font-family:var(--mono);font-size:11px;color:var(--mu);letter-spacing:.08em}
+#err{display:none;margin:0 0 7px;padding:8px 11px;border-radius:var(--rs);background:var(--rdd);border:0.5px solid rgba(255,79,79,.3);font-family:var(--mono);font-size:11px;color:var(--rd);line-height:1.5}
+#tabLive{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+#tabLive.gone{display:none}
 </style>
 </head>
 <body>
-<div id="loading"><div class="spinner"></div><div class="loading-text">LOADING PARKING DATA…</div></div>
+<div id="loading"><div class="spinner"></div><div class="loadTxt">LOADING…</div></div>
 
 <div id="app">
-  <header>
-    <div class="header-top">
-      <div class="wordmark">Melb Parking</div>
-      <div class="live-badge"><div class="live-dot"></div><span id="live-label">LIVE</span></div>
-    </div>
-    <div class="tab-nav">
-      <button class="tab-btn active" onclick="showTab('live',this)">Live Map</button>
-      <button class="tab-btn" onclick="showTab('patterns',this)">Best Times</button>
-    </div>
-    <div id="err"></div>
-  </header>
-
-  <!-- ══ LIVE TAB ══════════════════════════════════════════════════════════ -->
-  <div id="tab-live">
-    <div style="padding:0 14px">
-
-      <!-- Stats -->
-      <div class="stats">
-        <div class="stat"><div class="stat-label">Available</div><div class="stat-value green" id="s-avail">—</div><div class="stat-sub" id="s-pct">—</div></div>
-        <div class="stat"><div class="stat-label">Occupied</div><div class="stat-value red"   id="s-occ">—</div><div class="stat-sub" id="s-total">—</div></div>
-        <div class="stat"><div class="stat-label">Updated</div><div class="stat-value amber" id="s-time" style="font-size:13px;padding-top:4px">—</div><div class="stat-sub" id="s-date">—</div></div>
-      </div>
-
-      <!-- Suburb filter -->
-      <div class="scroll-row" id="suburb-scroll"></div>
-
-      <!-- Status filter -->
-      <div class="filter-section">
-        <div class="filter-label">Availability</div>
-        <div class="tag-row">
-          <button class="tag status-all active"  onclick="setStatus('all',this)">All bays</button>
-          <button class="tag status-free"         onclick="setStatus('free',this)">Available</button>
-          <button class="tag status-occ"          onclick="setStatus('occ',this)">Occupied</button>
-        </div>
-      </div>
-
-      <!-- Type filter -->
-      <div class="filter-section">
-        <div class="filter-label">Bay type</div>
-        <div class="tag-row" id="type-tags">
-          <button class="tag type-free active"  data-type="all"   onclick="setType('all',this)">All types</button>
-          <button class="tag type-free"          data-type="free"  onclick="setType('free',this)">Free / timed</button>
-          <button class="tag type-paid"          data-type="paid"  onclick="setType('paid',this)">Paid meter</button>
-          <button class="tag type-dis"           data-type="dis"   onclick="setType('dis',this)">Accessible</button>
-          <button class="tag type-load"          data-type="load"  onclick="setType('load',this)">Loading</button>
-        </div>
-      </div>
-
-      <!-- Duration filter -->
-      <div class="filter-section">
-        <div class="filter-label">Time limit</div>
-        <div class="tag-row">
-          <button class="tag dur-any active"  onclick="setDur('any',this)">Any</button>
-          <button class="tag dur-30"           onclick="setDur('30',this)">≤ 30 min</button>
-          <button class="tag dur-1h"           onclick="setDur('1h',this)">≤ 1 hr</button>
-          <button class="tag dur-2h"           onclick="setDur('2h',this)">≤ 2 hr</button>
-          <button class="tag dur-long"         onclick="setDur('long',this)">&gt; 2 hr</button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Map -->
-    <div id="map-wrap">
-      <div id="map-overlay">Loading map…</div>
-      <div id="map"></div>
-      <div class="map-legend" id="map-legend">
-        <div class="leg-row"><div class="leg-dot" style="background:#00e676"></div>Available</div>
-        <div class="leg-row"><div class="leg-dot" style="background:#ff4f4f"></div>Occupied</div>
-        <div class="leg-row" id="leg-paid" style="display:none"><div class="leg-dot" style="background:#ffb300"></div>Paid meter</div>
-        <div class="leg-row" id="leg-dis"  style="display:none"><div class="leg-dot" style="background:#4fc3f7"></div>Accessible</div>
-      </div>
-    </div>
-
-    <!-- Bottom sheet -->
-    <div id="sheet">
-      <div class="sheet-handle" onclick="toggleSheet()">
-        <div style="flex:1"><div class="sheet-grip"></div><div class="sheet-title" id="sheet-title">Zones by availability</div></div>
-        <div class="sheet-toggle" id="sheet-toggle">▼</div>
-      </div>
-      <div id="zone-list"></div>
-    </div>
+<header>
+  <div class="hdr">
+    <div class="logo">Melb Parking</div>
+    <div class="badge"><div class="dot"></div><span id="liveLabel">LIVE</span></div>
   </div>
+  <div class="tabs">
+    <button class="tab on"  onclick="showTab('live',this)">Live</button>
+    <button class="tab"     onclick="showTab('info',this)">Bay Info</button>
+    <button class="tab"     onclick="showTab('times',this)">Best Times</button>
+  </div>
+  <div id="err"></div>
+</header>
 
-  <!-- ══ BEST TIMES TAB ════════════════════════════════════════════════════ -->
-  <div id="tab-patterns">
-    <div id="patterns-loading" class="no-data">Loading historical patterns…</div>
-    <div id="patterns-content" style="display:none">
-      <div class="banner-row">
-        <div class="best-banner">
-          <div class="best-banner-label">Best time</div>
-          <div class="best-banner-value" id="p-best-time">—</div>
-          <div class="best-banner-sub"   id="p-best-day">—</div>
-        </div>
-        <div class="worst-banner">
-          <div class="worst-banner-label">Avoid</div>
-          <div class="worst-banner-value" id="p-worst-time">—</div>
-          <div class="worst-banner-sub"   id="p-worst-day">—</div>
-        </div>
+<!-- ══ LIVE TAB ══════════════════════════════════════════════════════════════ -->
+<div id="tabLive">
+  <div style="padding:0 14px">
+    <div class="stats">
+      <div class="stat"><div class="slabel">Available</div><div class="sval g" id="sAvail">—</div><div class="ssub" id="sPct">—</div></div>
+      <div class="stat"><div class="slabel">Occupied</div><div class="sval r" id="sOcc">—</div><div class="ssub" id="sTotal">—</div></div>
+      <div class="stat"><div class="slabel">Updated</div><div class="sval a" id="sTime" style="font-size:13px;padding-top:4px">—</div><div class="ssub" id="sDate">—</div></div>
+    </div>
+    <div class="pills" id="suburbPills"></div>
+    <div class="fgroup">
+      <div class="flabel">Availability</div>
+      <div class="chips">
+        <button class="chip on cAll"  onclick="setStatus('all',this)">All bays</button>
+        <button class="chip cFree"    onclick="setStatus('free',this)">Available</button>
+        <button class="chip cOcc"     onclick="setStatus('occ',this)">Occupied</button>
       </div>
-      <div class="section-label">Pick a day</div>
-      <div class="day-scroll" id="day-scroll"></div>
-      <div class="section-label" id="heatmap-label">Availability by hour</div>
-      <div class="heatmap"   id="heatmap"></div>
-      <div class="hm-labels" id="hm-labels"></div>
-      <div class="hour-card" id="hour-card">
-        <div class="hour-card-time" id="hc-time">Tap a cell above</div>
-        <div class="hour-card-sub"  id="hc-sub">to see detail for that hour</div>
+    </div>
+    <div class="fgroup">
+      <div class="flabel">Bay type <span id="rLoaded" style="color:var(--mu);font-size:9px;font-style:italic"></span></div>
+      <div class="chips">
+        <button class="chip on tAll"  data-t="all"  onclick="setType('all',this)">All types</button>
+        <button class="chip tFree"    data-t="free" onclick="setType('free',this)">Free/timed</button>
+        <button class="chip tPaid"    data-t="paid" onclick="setType('paid',this)">Paid meter</button>
+        <button class="chip tDis"     data-t="dis"  onclick="setType('dis',this)">Accessible</button>
+        <button class="chip tLoad"    data-t="load" onclick="setType('load',this)">Loading</button>
       </div>
-      <div class="section-label">All days at a glance</div>
-      <div class="day-summary" id="day-summary"></div>
-      <div style="padding:10px 0 4px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.8">
-        <span id="p-snap-count">—</span> snapshots from your fetch_live.py runs.<br>
-        Green = easy to park · Red = hard. Run fetch_history.py to refresh.
+    </div>
+    <div class="fgroup">
+      <div class="flabel">Time limit</div>
+      <div class="chips">
+        <button class="chip on dAny"  onclick="setDur('any',this)">Any</button>
+        <button class="chip d30"      onclick="setDur('30',this)">≤ 30min</button>
+        <button class="chip d1h"      onclick="setDur('1h',this)">≤ 1hr</button>
+        <button class="chip d2h"      onclick="setDur('2h',this)">≤ 2hr</button>
+        <button class="chip dLong"    onclick="setDur('long',this)">&gt; 2hr</button>
       </div>
     </div>
   </div>
+  <div id="mapWrap">
+    <div id="mapOverlay">Loading map…</div>
+    <div id="map"></div>
+    <div class="mapLegend" id="mapLegend">
+      <div class="legRow"><div class="legDot" style="background:#00e676"></div>Available</div>
+      <div class="legRow"><div class="legDot" style="background:#ff4f4f"></div>Occupied</div>
+      <div class="legRow" id="legPaid" style="display:none"><div class="legDot" style="background:#ffb300"></div>Paid meter</div>
+      <div class="legRow" id="legDis"  style="display:none"><div class="legDot" style="background:#4fc3f7"></div>Accessible</div>
+      <div class="legRow" id="legLoad" style="display:none"><div class="legDot" style="background:#ce93d8"></div>Loading</div>
+    </div>
+  </div>
+  <div id="sheet">
+    <div class="sheetHdr" onclick="toggleSheet()">
+      <div style="flex:1"><div class="grip"></div><div class="sheetTitle" id="sheetTitle">Zones by availability</div></div>
+      <div class="sheetArrow" id="sheetArrow">▼</div>
+    </div>
+    <div id="zoneList"></div>
+  </div>
+</div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-status" id="footer-status">City of Melbourne Open Data</div>
-    <button class="refresh-btn" onclick="refreshLive()"><span id="ri">↻</span> Refresh</button>
-  </footer>
+<!-- ══ BAY INFO TAB ══════════════════════════════════════════════════════════ -->
+<div id="tabInfo">
+  <div id="infoContent" class="noInfo">Run fetch_restrictions.py to load bay type data.</div>
+</div>
+
+<!-- ══ BEST TIMES TAB ═══════════════════════════════════════════════════════ -->
+<div id="tabTimes">
+  <div id="timesLoading" class="noData">Loading patterns…</div>
+  <div id="timesContent" style="display:none">
+    <div class="bannerRow">
+      <div class="bestBanner">
+        <div class="bbLabel">Best time</div>
+        <div class="bbVal" id="pBestTime">—</div>
+        <div class="bbSub" id="pBestDay">—</div>
+      </div>
+      <div class="worstBanner">
+        <div class="wbLabel">Avoid</div>
+        <div class="wbVal" id="pWorstTime">—</div>
+        <div class="wbSub" id="pWorstDay">—</div>
+      </div>
+    </div>
+    <div class="secL">Pick a day</div>
+    <div class="dayRow" id="dayRow"></div>
+    <div class="secL" id="hmLabel">Availability by hour</div>
+    <div class="hmap" id="hmap"></div>
+    <div class="hLabs" id="hLabs"></div>
+    <div class="hCard" id="hCard">
+      <div class="hTime" id="hcTime">Tap a cell above</div>
+      <div class="hSub"  id="hcSub">to see detail for that hour</div>
+    </div>
+    <div class="secL">All days at a glance</div>
+    <div class="daySumm" id="daySumm"></div>
+    <div style="padding:10px 0 4px;font-family:var(--mono);font-size:10px;color:var(--mu);line-height:1.8">
+      <span id="snapCount">—</span> snapshots · run fetch_history.py to refresh.
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fStatus" id="footerStatus">City of Melbourne Open Data</div>
+  <button class="rfBtn" onclick="doRefresh()"><span id="ri">↻</span> Refresh</button>
+</footer>
 </div>
 
 <script>
-// ══ Data sources ══════════════════════════════════════════════════════════════
-const LIVE_URL         = 'data/live.json';
-const PATTERNS_URL     = 'data/patterns.json';
-const RESTRICTIONS_URL = 'data/restrictions.json';
+// ── URLs ──────────────────────────────────────────────────────────────────────
+const LIVE_URL  = 'data/live.json';
+const REST_URL  = 'data/restrictions.json';
+const PAT_URL   = 'data/patterns.json';
 
-// ══ Suburb config ═════════════════════════════════════════════════════════════
+// ── Suburbs ───────────────────────────────────────────────────────────────────
 const SUBURBS = {
-  'All':        { center:[-37.814,144.963], zoom:14, bounds:null },
-  'CBD':        { center:[-37.814,144.963], zoom:15, bounds:{s:-37.823,n:-37.806,w:144.952,e:144.976} },
-  'Docklands':  { center:[-37.818,144.942], zoom:15, bounds:{s:-37.825,n:-37.812,w:144.932,e:144.954} },
-  'Southbank':  { center:[-37.825,144.962], zoom:15, bounds:{s:-37.832,n:-37.820,w:144.954,e:144.972} },
-  'Carlton':    { center:[-37.800,144.967], zoom:15, bounds:{s:-37.807,n:-37.793,w:144.959,e:144.975} },
-  'East Melb':  { center:[-37.813,144.983], zoom:15, bounds:{s:-37.820,n:-37.806,w:144.974,e:144.992} },
-  'Fitzroy':    { center:[-37.800,144.982], zoom:15, bounds:{s:-37.806,n:-37.793,w:144.974,e:144.990} },
-  'North Melb': { center:[-37.800,144.949], zoom:15, bounds:{s:-37.810,n:-37.793,w:144.940,e:144.960} },
+  'All':        {center:[-37.814,144.963],zoom:14,bounds:null},
+  'CBD':        {center:[-37.814,144.963],zoom:15,bounds:{s:-37.823,n:-37.806,w:144.952,e:144.976}},
+  'Docklands':  {center:[-37.818,144.942],zoom:15,bounds:{s:-37.825,n:-37.812,w:144.932,e:144.954}},
+  'Southbank':  {center:[-37.825,144.962],zoom:15,bounds:{s:-37.832,n:-37.820,w:144.954,e:144.972}},
+  'Carlton':    {center:[-37.800,144.967],zoom:15,bounds:{s:-37.807,n:-37.793,w:144.959,e:144.975}},
+  'East Melb':  {center:[-37.813,144.983],zoom:15,bounds:{s:-37.820,n:-37.806,w:144.974,e:144.992}},
+  'Fitzroy':    {center:[-37.800,144.982],zoom:15,bounds:{s:-37.806,n:-37.793,w:144.974,e:144.990}},
+  'North Melb': {center:[-37.800,144.949],zoom:15,bounds:{s:-37.810,n:-37.793,w:144.940,e:144.960}},
 };
 
-// ══ State ═════════════════════════════════════════════════════════════════════
-let allBays = [], restrictions = {};
-let filterStatus = 'all', filterType = 'all', filterDur = 'any';
-let activeSuburb = 'All', activeTab = 'live';
-let map, layerGroup, sheetOpen = true;
-let patternsData = null, activeDay = 0, selectedHour = null;
+// ── State ─────────────────────────────────────────────────────────────────────
+let allBays=[], rests={};
+let fStatus='all', fType='all', fDur='any', suburb='All';
+let map, layer, sheetOpen=true;
+let patData=null, activeDay=0, selHour=null;
+let activeTab='live';
 
-// ══ Filtering logic ═══════════════════════════════════════════════════════════
-function getBayRestriction(bay) {
-  return restrictions[String(bay.id)] || null;
-}
+// ── Filtering ─────────────────────────────────────────────────────────────────
+function getR(bay){ return rests[String(bay.id)] || null; }
 
-function matchesTypeFilter(bay) {
-  if (filterType === 'all') return true;
-  const r = getBayRestriction(bay);
-  if (!r) return filterType === 'free'; // no restriction data = assume free
-  if (filterType === 'free')  return r.free && !r.paid && !r.loading && !r.disability;
-  if (filterType === 'paid')  return r.paid;
-  if (filterType === 'dis')   return r.disability;
-  if (filterType === 'load')  return r.loading;
+function typeOk(bay){
+  if(fType==='all') return true;
+  const r=getR(bay);
+  if(!r) return fType==='free';
+  if(fType==='free')  return r.free;
+  if(fType==='paid')  return r.paid;
+  if(fType==='dis')   return r.disability;
+  if(fType==='load')  return r.loading;
   return true;
 }
 
-function matchesDurFilter(bay) {
-  if (filterDur === 'any') return true;
-  const r = getBayRestriction(bay);
-  if (!r || r.dur_min == null) return filterDur === 'any';
-  if (filterDur === '30')  return r.dur_min <= 30;
-  if (filterDur === '1h')  return r.dur_min <= 60;
-  if (filterDur === '2h')  return r.dur_min <= 120;
-  if (filterDur === 'long') return r.dur_min > 120;
+function durOk(bay){
+  if(fDur==='any') return true;
+  const r=getR(bay);
+  if(!r||r.dur_min==null) return fDur==='any';
+  if(fDur==='30')   return r.dur_min<=30;
+  if(fDur==='1h')   return r.dur_min<=60;
+  if(fDur==='2h')   return r.dur_min<=120;
+  if(fDur==='long') return r.dur_min>120;
   return true;
 }
 
-function filteredBays() {
-  let bays = allBays;
-  const s = SUBURBS[activeSuburb];
-  if (s && s.bounds) {
-    const {s:south,n:north,w:west,e:east} = s.bounds;
-    bays = bays.filter(b => b.lat>=south && b.lat<=north && b.lon>=west && b.lon<=east);
-  }
-  if (filterStatus === 'free') bays = bays.filter(b => b.status==='Unoccupied');
-  if (filterStatus === 'occ')  bays = bays.filter(b => b.status==='Present');
-  bays = bays.filter(matchesTypeFilter);
-  bays = bays.filter(matchesDurFilter);
-  return bays;
+function visible(){
+  let b=allBays;
+  const s=SUBURBS[suburb];
+  if(s&&s.bounds){const{s:S,n,w,e}=s.bounds;b=b.filter(x=>x.lat>=S&&x.lat<=n&&x.lon>=w&&x.lon<=e);}
+  if(fStatus==='free') b=b.filter(x=>x.status==='Unoccupied');
+  if(fStatus==='occ')  b=b.filter(x=>x.status==='Present');
+  b=b.filter(typeOk);
+  b=b.filter(durOk);
+  return b;
 }
 
-// ══ Filter setters ════════════════════════════════════════════════════════════
-function setStatus(v, el) {
-  filterStatus = v;
-  document.querySelectorAll('.tag[class*="status-"]').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderLive();
+// ── Filter setters ────────────────────────────────────────────────────────────
+function setStatus(v,el){
+  fStatus=v;
+  document.querySelectorAll('.chip[class*="c"]').forEach(c=>{if(c.classList.contains('cAll')||c.classList.contains('cFree')||c.classList.contains('cOcc'))c.classList.remove('on');});
+  el.classList.add('on');
+  render();
+}
+function setType(v,el){
+  fType=v;
+  document.querySelectorAll('.chip[data-t]').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('legPaid').style.display=(v==='paid'||v==='all')?'flex':'none';
+  document.getElementById('legDis').style.display =(v==='dis' ||v==='all')?'flex':'none';
+  document.getElementById('legLoad').style.display=(v==='load'||v==='all')?'flex':'none';
+  render();
+}
+function setDur(v,el){
+  fDur=v;
+  document.querySelectorAll('.chip[class*="d"]').forEach(c=>{if(/^d[A-Z0-9]/.test(c.className.split(' ').find(x=>/^d/.test(x))||''))c.classList.remove('on');});
+  // simpler: remove on from all dur chips
+  ['dAny','d30','d1h','d2h','dLong'].forEach(cls=>{
+    document.querySelectorAll('.'+cls).forEach(c=>c.classList.remove('on'));
+  });
+  el.classList.add('on');
+  render();
+}
+function setSuburb(name){
+  suburb=name;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('on',p.dataset.name===name));
+  const s=SUBURBS[name];
+  if(map&&s) map.flyTo(s.center,s.zoom,{duration:.6});
+  render();
 }
 
-function setType(v, el) {
-  filterType = v;
-  document.querySelectorAll('.tag[data-type]').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  // Update legend visibility
-  document.getElementById('leg-paid').style.display = (v==='paid'||v==='all') ? 'flex' : 'none';
-  document.getElementById('leg-dis').style.display  = (v==='dis'||v==='all')  ? 'flex' : 'none';
-  renderLive();
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function pct(bays){if(!bays.length)return 0;return Math.round(bays.filter(b=>b.status==='Unoccupied').length/bays.length*100);}
+function dotCol(p){return p>=50?'#00e676':p>=20?'#ffb300':'#ff4f4f';}
+
+function updateStats(bays){
+  const tot=bays.length, av=bays.filter(b=>b.status==='Unoccupied').length, oc=bays.filter(b=>b.status==='Present').length, p=tot?Math.round(av/tot*100):0;
+  document.getElementById('sAvail').textContent=av.toLocaleString();
+  document.getElementById('sOcc').textContent=oc.toLocaleString();
+  document.getElementById('sPct').textContent=p+'% free';
+  document.getElementById('sTotal').textContent=tot.toLocaleString()+' shown';
 }
 
-function setDur(v, el) {
-  filterDur = v;
-  document.querySelectorAll('.tag[class*="dur-"]').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderLive();
-}
-
-function setSuburb(name) {
-  activeSuburb = name;
-  document.querySelectorAll('.s-pill').forEach(p=>p.classList.toggle('active', p.dataset.name===name));
-  const s = SUBURBS[name];
-  if (map && s) map.flyTo(s.center, s.zoom, {duration:.6});
-  renderLive();
-}
-
-// ══ Helpers ═══════════════════════════════════════════════════════════════════
-function availPct(bays) {
-  if (!bays.length) return 0;
-  return Math.round(bays.filter(b=>b.status==='Unoccupied').length / bays.length * 100);
-}
-function dotColor(pct) { return pct>=50?'#00e676':pct>=20?'#ffb300':'#ff4f4f'; }
-
-function durLabel(min) {
-  if (min == null) return null;
-  if (min < 60)   return `${min}min`;
-  if (min === 60)  return '1hr';
-  if (min % 60 === 0) return `${min/60}hr`;
-  return `${Math.floor(min/60)}hr ${min%60}m`;
-}
-
-function formatWindows(windows) {
-  const DAY = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  return windows.slice(0,3).map(w => {
-    const days = w.from_day!=null && w.to_day!=null
-      ? (w.from_day===w.to_day ? DAY[w.from_day] : `${DAY[w.from_day]}–${DAY[w.to_day]}`)
-      : '';
-    const times = w.start && w.end ? `${w.start}–${w.end}` : '';
-    const dur   = w.dur_min ? durLabel(w.dur_min) : '';
-    return [w.desc||w.type||'', days, times, dur].filter(Boolean).join(' · ');
-  }).join('\n');
-}
-
-// ══ Stats ═════════════════════════════════════════════════════════════════════
-function updateStats(bays) {
-  const total = bays.length;
-  const avail = bays.filter(b=>b.status==='Unoccupied').length;
-  const occ   = bays.filter(b=>b.status==='Present').length;
-  const pct   = total ? Math.round(avail/total*100) : 0;
-  document.getElementById('s-avail').textContent = avail.toLocaleString();
-  document.getElementById('s-occ').textContent   = occ.toLocaleString();
-  document.getElementById('s-pct').textContent   = pct+'% free';
-  document.getElementById('s-total').textContent = total.toLocaleString()+' shown';
-}
-
-// ══ Suburb pills ══════════════════════════════════════════════════════════════
-function buildSuburbPills() {
-  const wrap = document.getElementById('suburb-scroll');
-  wrap.innerHTML = Object.keys(SUBURBS).map(name => {
-    const s = SUBURBS[name];
-    const bays = s.bounds
-      ? allBays.filter(b=>b.lat>=s.bounds.s&&b.lat<=s.bounds.n&&b.lon>=s.bounds.w&&b.lon<=s.bounds.e)
-      : allBays;
-    const col = dotColor(availPct(bays));
-    return `<button class="s-pill${name===activeSuburb?' active':''}" data-name="${name}" onclick="setSuburb('${name}')">
-      <span class="s-dot" style="background:${col}"></span>${name==='All'?'All suburbs':name}
-    </button>`;
+function buildPills(){
+  document.getElementById('suburbPills').innerHTML=Object.keys(SUBURBS).map(nm=>{
+    const s=SUBURBS[nm];
+    const b=s.bounds?allBays.filter(x=>x.lat>=s.bounds.s&&x.lat<=s.bounds.n&&x.lon>=s.bounds.w&&x.lon<=s.bounds.e):allBays;
+    const c=dotCol(pct(b));
+    return `<button class="pill${nm===suburb?' on':''}" data-name="${nm}" onclick="setSuburb('${nm}')"><span class="pdot" style="background:${c}"></span>${nm==='All'?'All suburbs':nm}</button>`;
   }).join('');
 }
 
-// ══ Map markers ═══════════════════════════════════════════════════════════════
-function markerColor(bay) {
-  const r = getBayRestriction(bay);
-  if (filterType !== 'all') {
-    // When type-filtered just use status colour
-    return bay.status==='Unoccupied' ? '#00e676' : '#ff4f4f';
-  }
-  // Default: colour by type if restrictions loaded, else by status
-  if (r) {
-    if (r.disability) return bay.status==='Unoccupied' ? '#4fc3f7' : '#1565c0';
-    if (r.paid)       return bay.status==='Unoccupied' ? '#ffb300' : '#e65100';
-    if (r.loading)    return bay.status==='Unoccupied' ? '#ce93d8' : '#6a1b9a';
-  }
-  return bay.status==='Unoccupied' ? '#00e676' : '#ff4f4f';
+// ── Map marker colour ─────────────────────────────────────────────────────────
+function mCol(bay){
+  const r=getR(bay);
+  const avail=bay.status==='Unoccupied';
+  if(!r) return avail?'#00e676':'#ff4f4f';
+  if(r.disability) return avail?'#4fc3f7':'#0d7ab5';
+  if(r.loading)    return avail?'#ce93d8':'#7b1fa2';
+  if(r.paid)       return avail?'#ffb300':'#e65100';
+  return avail?'#00e676':'#ff4f4f';
 }
 
-function buildPopup(bay) {
-  const r  = getBayRestriction(bay);
-  const isAvail = bay.status === 'Unoccupied';
-  const statusColor = isAvail ? '#00e676' : '#ff4f4f';
-  const statusText  = isAvail ? 'Available' : 'Occupied';
-  const ts = bay.ts ? new Date(bay.ts).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}) : '—';
+// ── Popup HTML ────────────────────────────────────────────────────────────────
+function durLabel(m){if(!m)return null;if(m<60)return m+'min';if(m===60)return '1hr';if(m%60===0)return (m/60)+'hr';return Math.floor(m/60)+'hr '+m%60+'m';}
+function hlabel(h){if(h===0)return '12am';if(h<12)return h+'am';if(h===12)return '12pm';return (h-12)+'pm';}
 
-  let typeHtml = '', tagsHtml = '', windowsHtml = '';
+function buildPopup(bay){
+  const r=getR(bay);
+  const av=bay.status==='Unoccupied';
+  const sc=av?'#00e676':'#ff4f4f';
+  const st=av?'Available':'Occupied';
+  const ts=bay.ts?new Date(bay.ts).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}):'—';
 
-  if (r) {
-    typeHtml = `<div class="popup-type">${r.type || r.desc || 'Unknown type'}</div>
-      <div class="popup-desc">${r.desc || ''}</div>`;
+  let body='';
+  if(r){
+    const tags=[];
+    if(r.paid)       tags.push(`<span class="pTag paid">Paid meter</span>`);
+    else if(r.free)  tags.push(`<span class="pTag free">${r.dur?r.dur+' limit':'Free/timed'}</span>`);
+    if(r.disability) tags.push(`<span class="pTag dis">Accessible</span>`);
+    if(r.loading)    tags.push(`<span class="pTag load">Loading zone</span>`);
+    if(r.no_park)    tags.push(`<span class="pTag nop">No parking</span>`);
+    if(r.dur)        tags.push(`<span class="pTag dur">${r.dur}</span>`);
 
-    const tags = [];
-    if (r.paid)       tags.push(`<span class="popup-tag paid">Paid meter</span>`);
-    if (r.free && !r.paid) tags.push(`<span class="popup-tag free">${r.dur_min ? durLabel(r.dur_min)+' limit' : 'Timed free'}</span>`);
-    if (r.disability) tags.push(`<span class="popup-tag dis">Accessible</span>`);
-    if (r.loading)    tags.push(`<span class="popup-tag load">Loading zone</span>`);
-    if (r.no_park)    tags.push(`<span class="popup-tag nopark">No parking</span>`);
-    if (tags.length)  tagsHtml = `<div class="popup-tags">${tags.join('')}</div>`;
+    const rules=(r.rules||[]).slice(0,4).map(w=>{
+      const parts=[w.desc||w.type||''].concat([w.days,w.times].filter(Boolean));
+      const ph=w.ph?'· incl. PH':'';
+      const ex=w.exempt?`· excl. ${w.exempt}`:'';
+      return `<div class="pRule"><strong>${parts[0]}</strong> ${parts.slice(1).join(' ')} ${ph} ${ex}</div>`;
+    }).join('');
 
-    if (r.windows && r.windows.length) {
-      const rows = formatWindows(r.windows).split('\n').filter(Boolean);
-      windowsHtml = `<div class="popup-windows">${rows.map(row=>`<div>${row}</div>`).join('')}</div>`;
-    }
+    body=`
+      <div class="pType">${r.primary||'Unknown type'}</div>
+      ${tags.length?`<div class="pTags">${tags.join('')}</div>`:''}
+      ${rules?`<div class="pRules">${rules}</div>`:''}`;
   } else {
-    typeHtml = `<div class="popup-desc" style="color:var(--muted)">Restriction data not loaded.<br>Run fetch_restrictions.py</div>`;
+    body=`<div class="pDesc" style="color:var(--mu)">No restriction data.<br>Run fetch_restrictions.py</div>`;
   }
 
-  return `<div class="popup-card">
-    <div class="popup-status">
-      <span class="popup-dot" style="background:${statusColor}"></span>
-      <span style="color:${statusColor}">${statusText}</span>
-      <span style="color:var(--muted);font-size:10px;margin-left:auto">since ${ts}</span>
-    </div>
-    ${typeHtml}${tagsHtml}
-    <div class="popup-row" style="font-size:10px;color:var(--muted);margin-bottom:${windowsHtml?'0':'0'}">
-      <span>Zone ${bay.zone??'—'}</span><span>Bay ${bay.id??'—'}</span>
-    </div>
-    ${windowsHtml}
+  return `<div class="popup">
+    <div class="pStatus"><span class="pDot" style="background:${sc}"></span><span style="color:${sc}">${st}</span><span style="color:var(--mu);font-size:10px;margin-left:auto">since ${ts}</span></div>
+    ${body}
+    <div class="pMeta"><span>Zone ${bay.zone??'—'}</span><span>Bay ID ${bay.id??'—'}</span></div>
   </div>`;
 }
 
-function drawMarkers(bays) {
-  if (!layerGroup) return;
-  layerGroup.clearLayers();
-  const zoom = map.getZoom();
-  const r = zoom>=16 ? 6 : zoom>=15 ? 4 : 3;
-  for (const b of bays) {
-    const color = markerColor(b);
-    const m = L.circleMarker([b.lat, b.lon], {
-      radius:r, fillColor:color, fillOpacity:.88, color:'rgba(0,0,0,0.35)', weight:1
-    });
-    m.bindPopup(buildPopup(b), {maxWidth:220, className:'clean-popup'});
-    layerGroup.addLayer(m);
+// ── Draw markers ──────────────────────────────────────────────────────────────
+function drawMarkers(bays){
+  if(!layer) return;
+  layer.clearLayers();
+  const z=map.getZoom(), r=z>=16?6:z>=15?4:3;
+  for(const b of bays){
+    const m=L.circleMarker([b.lat,b.lon],{radius:r,fillColor:mCol(b),fillOpacity:.88,color:'rgba(0,0,0,.3)',weight:1});
+    m.bindPopup(buildPopup(b),{maxWidth:230,className:'cp'});
+    layer.addLayer(m);
   }
-  document.getElementById('map-overlay').classList.add('hidden');
+  document.getElementById('mapOverlay').classList.add('gone');
 }
 
-// ══ Zone list ═════════════════════════════════════════════════════════════════
-function renderZones(bays) {
-  const zones = {};
-  for (const b of bays) {
-    const key = b.zone != null ? `Zone ${b.zone}` : 'Unzoned';
-    if (!zones[key]) zones[key]={total:0,avail:0};
-    zones[key].total++;
-    if (b.status==='Unoccupied') zones[key].avail++;
+// ── Zone list ─────────────────────────────────────────────────────────────────
+function renderZones(bays){
+  const zones={};
+  for(const b of bays){
+    const k=b.zone!=null?`Zone ${b.zone}`:'Unzoned';
+    if(!zones[k])zones[k]={total:0,avail:0};
+    zones[k].total++;
+    if(b.status==='Unoccupied')zones[k].avail++;
   }
-  const sorted = Object.entries(zones).sort((a,b)=>b[1].avail-a[1].avail).slice(0,40);
-  document.getElementById('sheet-title').textContent =
-    `${sorted.length} zones · ${bays.length.toLocaleString()} bays`;
-
-  const el = document.getElementById('zone-list');
-  if (!sorted.length) {
-    el.innerHTML='<div style="padding:12px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)">No bays match current filters</div>';
-    return;
-  }
-  el.innerHTML = sorted.map(([name,z])=>{
-    const pct = Math.round(z.avail/z.total*100);
-    const col = pct>=50?'var(--green)':pct>=20?'var(--amber)':'var(--red)';
-    return `<div class="z-row">
-      <div><div class="z-name">${name}</div><div class="z-count">${z.avail}/${z.total} free</div></div>
-      <div class="z-right">
-        <div class="bar"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div>
-        <div class="pct" style="color:${col}">${pct}%</div>
-      </div>
-    </div>`;
+  const sorted=Object.entries(zones).sort((a,b)=>b[1].avail-a[1].avail).slice(0,40);
+  document.getElementById('sheetTitle').textContent=`${sorted.length} zones · ${bays.length.toLocaleString()} bays`;
+  const el=document.getElementById('zoneList');
+  if(!sorted.length){el.innerHTML='<div style="padding:12px 14px;font-family:var(--mono);font-size:11px;color:var(--mu)">No bays match filters</div>';return;}
+  el.innerHTML=sorted.map(([name,z])=>{
+    const p=Math.round(z.avail/z.total*100);
+    const c=p>=50?'var(--gn)':p>=20?'var(--am)':'var(--rd)';
+    return `<div class="zRow"><div><div class="zName">${name}</div><div class="zCnt">${z.avail}/${z.total} free</div></div>
+    <div class="zR"><div class="bar"><div class="barFill" style="width:${p}%;background:${c}"></div></div>
+    <div class="pct" style="color:${c}">${p}%</div></div></div>`;
   }).join('');
 }
 
-function renderLive() {
-  const bays = filteredBays();
+function render(){
+  const bays=visible();
   updateStats(bays);
   drawMarkers(bays);
   renderZones(bays);
-  buildSuburbPills();
+  buildPills();
 }
 
-function toggleSheet() {
-  sheetOpen = !sheetOpen;
-  document.getElementById('zone-list').style.display = sheetOpen?'':'none';
-  document.getElementById('sheet-toggle').textContent = sheetOpen?'▼':'▲';
+function toggleSheet(){
+  sheetOpen=!sheetOpen;
+  document.getElementById('zoneList').style.display=sheetOpen?'':'none';
+  document.getElementById('sheetArrow').textContent=sheetOpen?'▼':'▲';
 }
 
-// ══ Load data ═════════════════════════════════════════════════════════════════
-async function loadLive() {
-  try {
-    const res = await fetch(LIVE_URL + '?t=' + Date.now());
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    allBays = json.bays || [];
-    if (!allBays.length) throw new Error('No bay data in live.json');
-
-    const fetched = new Date(json.fetched_at);
-    document.getElementById('s-time').textContent =
-      fetched.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('s-date').textContent =
-      fetched.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
-    document.getElementById('live-label').textContent = 'LIVE';
-    document.getElementById('footer-status').textContent =
-      `${allBays.length.toLocaleString()} sensors · ${Object.keys(restrictions).length} restrictions loaded`;
-    document.getElementById('err').style.display = 'none';
-    renderLive();
-  } catch(e) {
-    showErr(e.message + ' — run fetch_live.py to generate data/live.json');
-    document.getElementById('live-label').textContent = 'STALE';
-  } finally {
-    document.getElementById('loading').classList.add('hidden');
+// ── Bay Info tab ──────────────────────────────────────────────────────────────
+function renderInfo(){
+  const keys=Object.keys(rests);
+  if(!keys.length){
+    document.getElementById('infoContent').innerHTML='<div class="noInfo">Run fetch_restrictions.py to load bay restriction data.</div>';
+    return;
   }
-}
+  const all=keys.map(k=>rests[k]);
+  const paid=all.filter(r=>r.paid).length;
+  const dis =all.filter(r=>r.disability).length;
+  const load=all.filter(r=>r.loading).length;
+  const free=all.filter(r=>r.free).length;
+  const nop =all.filter(r=>r.no_park).length;
 
-async function loadRestrictions() {
-  try {
-    const res = await fetch(RESTRICTIONS_URL + '?t=' + Date.now());
-    if (!res.ok) return; // restrictions optional — silently skip
-    const json = await res.json();
-    restrictions = json.bays || {};
-    console.log(`Restrictions loaded: ${Object.keys(restrictions).length} bays`);
-  } catch(e) {
-    console.warn('Restrictions not available:', e.message);
+  // Duration breakdown
+  const d30  =all.filter(r=>r.dur_min&&r.dur_min<=30).length;
+  const d1h  =all.filter(r=>r.dur_min&&r.dur_min<=60&&r.dur_min>30).length;
+  const d2h  =all.filter(r=>r.dur_min&&r.dur_min<=120&&r.dur_min>60).length;
+  const d3h  =all.filter(r=>r.dur_min&&r.dur_min>120).length;
+  const noLim=all.filter(r=>!r.dur_min).length;
+
+  // Top type descriptions
+  const typeCounts={};
+  for(const r of all){
+    const t=(r.primary||'Unknown').replace(/\s*\d+\s*$/,'').trim();
+    typeCounts[t]=(typeCounts[t]||0)+1;
   }
-}
+  const topTypes=Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
 
-async function refreshLive() {
-  const icon = document.getElementById('ri');
-  icon.classList.add('spinning');
-  document.querySelector('.refresh-btn').disabled = true;
-  await loadLive();
-  icon.classList.remove('spinning');
-  document.querySelector('.refresh-btn').disabled = false;
-}
+  const typeColours={
+    paid:'#ffb300', disability:'#4fc3f7', loading:'#ce93d8',
+    no_park:'#ff4f4f', free:'#00e676',
+  };
+  function tCol(r){
+    if(r.no_park)    return '#ff4f4f';
+    if(r.loading)    return '#ce93d8';
+    if(r.disability) return '#4fc3f7';
+    if(r.paid)       return '#ffb300';
+    return '#00e676';
+  }
 
-// ══ Best Times tab ════════════════════════════════════════════════════════════
-function hourLabel(h) {
-  if (h===0)  return '12am';
-  if (h<12)   return `${h}am`;
-  if (h===12) return '12pm';
-  return `${h-12}pm`;
-}
-
-function heatmapColor(pct) {
-  if (pct >= 80) return '#0a3d1f';
-  if (pct >= 60) return '#1a6b35';
-  if (pct >= 45) return '#4caf50';
-  if (pct >= 30) return '#ffb300';
-  if (pct >= 15) return '#f4511e';
-  return '#b71c1c';
-}
-
-function renderHeatmap(dayData) {
-  document.getElementById('heatmap-label').textContent =
-    `Availability by hour — ${dayData.label}`;
-  document.getElementById('heatmap').innerHTML = dayData.hours.map(h => {
-    const col = heatmapColor(h.pct_avail);
-    const sel = selectedHour===h.hour ? ' selected' : '';
-    return `<div class="hm-cell${sel}" style="background:${col}"
-      onclick="selectHour(${h.hour})"
-      title="${hourLabel(h.hour)} · ${h.pct_avail}% avail · ${h.samples} obs"></div>`;
+  // Figure out colour for each top type
+  const typeRowsHtml=topTypes.map(([name,count])=>{
+    const sample=all.find(r=>(r.primary||'').startsWith(name));
+    const col=sample?tCol(sample):'#888';
+    const pct_=Math.round(count/all.length*100);
+    const desc=sample?(sample.paid?'Paid meter · '+(sample.dur||''):(sample.loading?'Loading zone':(sample.disability?'Accessible bay':(sample.dur||'Free timed')))):'';
+    return `<div class="typeRow">
+      <div class="typeDot" style="background:${col}"></div>
+      <div><div class="typeName">${name}</div><div class="typeDesc">${desc}</div></div>
+      <div style="text-align:right"><div class="typeCount" style="color:${col}">${count.toLocaleString()}</div><div style="font-size:10px;color:var(--mu);font-family:var(--mono)">${pct_}%</div></div>
+    </div>`;
   }).join('');
-  document.getElementById('hm-labels').innerHTML = dayData.hours.map(h =>
-    `<div class="hm-label">${h.hour%3===0?hourLabel(h.hour):''}</div>`
-  ).join('');
-  updateHourCard(dayData);
+
+  document.getElementById('infoContent').innerHTML=`
+    <div class="secLabel">Bay type breakdown</div>
+    <div class="infoStats">
+      <div class="iStat"><div class="iVal" style="color:var(--gn)">${free.toLocaleString()}</div><div class="iLab">Free / timed</div><div class="iSub">No payment required</div></div>
+      <div class="iStat"><div class="iVal" style="color:var(--am)">${paid.toLocaleString()}</div><div class="iLab">Paid meter</div><div class="iSub">Meter or ticket required</div></div>
+      <div class="iStat"><div class="iVal" style="color:var(--bl)">${dis.toLocaleString()}</div><div class="iLab">Accessible</div><div class="iSub">Disability permit required</div></div>
+      <div class="iStat"><div class="iVal" style="color:var(--pu)">${load.toLocaleString()}</div><div class="iLab">Loading zones</div><div class="iSub">Commercial use only</div></div>
+    </div>
+
+    <div class="secLabel">Time limit breakdown</div>
+    <div class="durList">
+      <div class="durCard"><div class="durVal" style="color:var(--gn)">${d30.toLocaleString()}</div><div class="durLab">≤ 30 min</div></div>
+      <div class="durCard"><div class="durVal" style="color:var(--gn)">${d1h.toLocaleString()}</div><div class="durLab">31 min – 1 hr</div></div>
+      <div class="durCard"><div class="durVal" style="color:var(--am)">${d2h.toLocaleString()}</div><div class="durLab">1 – 2 hrs</div></div>
+      <div class="durCard"><div class="durVal" style="color:var(--rd)">${d3h.toLocaleString()}</div><div class="durLab">&gt; 2 hrs</div></div>
+    </div>
+
+    <div class="secLabel">Most common restriction types</div>
+    <div class="typeList">${typeRowsHtml}</div>
+
+    <div style="padding:12px 0 4px;font-family:var(--mono);font-size:10px;color:var(--mu);line-height:1.8">
+      ${all.length.toLocaleString()} bays with restriction data loaded.<br>
+      Re-run fetch_restrictions.py monthly to keep current.
+    </div>`;
 }
 
-function selectHour(hour) {
-  selectedHour = hour;
-  renderHeatmap(patternsData.days[activeDay]);
+// ── Best Times tab ────────────────────────────────────────────────────────────
+function hmCol(p){
+  if(p>=80)return '#0a3d1f';if(p>=60)return '#1a6b35';if(p>=45)return '#4caf50';
+  if(p>=30)return '#ffb300';if(p>=15)return '#f4511e';return '#b71c1c';
 }
 
-function updateHourCard(dayData) {
-  const hc = document.getElementById('hour-card');
-  if (selectedHour === null) {
-    document.getElementById('hc-time').textContent = 'Tap any cell above';
-    document.getElementById('hc-sub').textContent  = 'to see availability detail for that hour';
-    hc.style.borderColor = 'var(--border)';
-    document.getElementById('hc-time').style.color = 'var(--text)';
+function renderHeatmap(day){
+  document.getElementById('hmLabel').textContent=`Availability by hour — ${day.label}`;
+  document.getElementById('hmap').innerHTML=day.hours.map(h=>{
+    const sel=selHour===h.hour?' sel':'';
+    return `<div class="hCell${sel}" style="background:${hmCol(h.pct_avail)}" onclick="selH(${h.hour})" title="${hlabel(h.hour)} · ${h.pct_avail}% · ${h.samples} obs"></div>`;
+  }).join('');
+  document.getElementById('hLabs').innerHTML=day.hours.map(h=>`<div class="hLab">${h.hour%3===0?hlabel(h.hour):''}</div>`).join('');
+  updateHCard(day);
+}
+
+function selH(h){selHour=h;renderHeatmap(patData.days[activeDay]);}
+
+function updateHCard(day){
+  const hc=document.getElementById('hCard');
+  if(selHour===null){
+    document.getElementById('hcTime').textContent='Tap any cell above';
+    document.getElementById('hcSub').textContent='to see availability detail';
+    hc.style.borderColor='var(--b0)';
+    document.getElementById('hcTime').style.color='var(--tx)';
     return;
   }
-  const h = dayData.hours.find(x=>x.hour===selectedHour);
-  if (!h) return;
-  const pct = h.pct_avail;
-  const col = pct>=60?'var(--green)':pct>=30?'var(--amber)':'var(--red)';
-  const label = pct>=80?'Very easy to park':pct>=60?'Good availability':pct>=30?'Getting busy':pct>=15?'Hard to find a spot':'Avoid — very busy';
-  const obs = h.samples>0 ? `${h.samples} obs` : 'no data yet';
-  document.getElementById('hc-time').textContent = `${hourLabel(selectedHour)} · ${dayData.label}`;
-  document.getElementById('hc-sub').textContent  = `${label} · ${pct}% available · ${obs}`;
-  document.getElementById('hc-time').style.color = col;
-  hc.style.borderColor = col;
+  const h=day.hours.find(x=>x.hour===selHour);
+  if(!h)return;
+  const p=h.pct_avail;
+  const c=p>=60?'var(--gn)':p>=30?'var(--am)':'var(--rd)';
+  const lbl=p>=80?'Very easy to park':p>=60?'Good availability':p>=30?'Getting busy':p>=15?'Hard to find':'Avoid — very busy';
+  document.getElementById('hcTime').textContent=`${hlabel(selHour)} · ${day.label}`;
+  document.getElementById('hcSub').textContent=`${lbl} · ${p}% available · ${h.samples||0} observations`;
+  document.getElementById('hcTime').style.color=c;
+  hc.style.borderColor=c;
 }
 
-function selectDay(dow) {
-  activeDay = dow;
-  selectedHour = null;
-  document.querySelectorAll('.day-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.day)===dow));
-  renderHeatmap(patternsData.days[dow]);
+function selDay(d){
+  activeDay=d; selHour=null;
+  document.querySelectorAll('.dayBtn').forEach(b=>b.classList.toggle('on',parseInt(b.dataset.d)===d));
+  renderHeatmap(patData.days[d]);
 }
 
-function renderPatterns() {
-  const p = patternsData;
-  document.getElementById('p-snap-count').textContent = (p.total_snapshots||0).toLocaleString();
-  document.getElementById('p-best-time').textContent  = p.overall_best.hour_label;
-  document.getElementById('p-best-day').textContent   = `${p.overall_best.day_label} · ${p.overall_best.pct}% avail`;
-  document.getElementById('p-worst-time').textContent = p.overall_worst.hour_label;
-  document.getElementById('p-worst-day').textContent  = `${p.overall_worst.day_label} · ${p.overall_worst.pct}% avail`;
-
-  document.getElementById('day-scroll').innerHTML = p.days.map(d =>
-    `<button class="day-btn${d.day===activeDay?' active':''}" data-day="${d.day}" onclick="selectDay(${d.day})">${d.label}</button>`
-  ).join('');
-
+function renderTimes(){
+  const p=patData;
+  document.getElementById('snapCount').textContent=(p.total_snapshots||0).toLocaleString();
+  document.getElementById('pBestTime').textContent=p.overall_best.hour_label;
+  document.getElementById('pBestDay').textContent=`${p.overall_best.day_label} · ${p.overall_best.pct}% avail`;
+  document.getElementById('pWorstTime').textContent=p.overall_worst.hour_label;
+  document.getElementById('pWorstDay').textContent=`${p.overall_worst.day_label} · ${p.overall_worst.pct}% avail`;
+  document.getElementById('dayRow').innerHTML=p.days.map(d=>`<button class="dayBtn${d.day===activeDay?' on':''}" data-d="${d.day}" onclick="selDay(${d.day})">${d.label}</button>`).join('');
   renderHeatmap(p.days[activeDay]);
-
-  document.getElementById('day-summary').innerHTML = p.days.map(d =>
-    `<div class="ds-row" onclick="selectDay(${d.day})">
-      <div class="ds-day">${d.label}</div>
-      <div class="ds-best">Best ${d.best_hour.label}</div>
-      <div class="ds-bar-wrap"><div class="ds-bar" style="width:${100-d.worst_hour.pct_avail}%"></div></div>
-      <div class="ds-worst">Busy ${d.worst_hour.label}</div>
-    </div>`
-  ).join('');
-
-  document.getElementById('patterns-loading').style.display = 'none';
-  document.getElementById('patterns-content').style.display = 'block';
+  document.getElementById('daySumm').innerHTML=p.days.map(d=>`<div class="dsRow" onclick="selDay(${d.day})">
+    <div class="dsDay">${d.label}</div>
+    <div class="dsBest">Best ${d.best_hour.label}</div>
+    <div class="dsBar"><div class="dsBarFill" style="width:${100-d.worst_hour.pct_avail}%"></div></div>
+    <div class="dsWorst">Busy ${d.worst_hour.label}</div>
+  </div>`).join('');
+  document.getElementById('timesLoading').style.display='none';
+  document.getElementById('timesContent').style.display='block';
 }
 
-async function loadPatterns() {
-  document.getElementById('patterns-loading').textContent = 'Loading patterns…';
-  try {
-    const res = await fetch(PATTERNS_URL + '?t=' + Date.now());
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    patternsData = await res.json();
-    renderPatterns();
-  } catch(e) {
-    document.getElementById('patterns-loading').innerHTML =
-      `<div>No patterns yet.</div>
-       <div style="margin-top:8px;font-size:11px">Run <span style="color:var(--accent)">fetch_history.py</span> after<br>collecting a few days of snapshots.</div>`;
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function showTab(tab,btn){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('tabLive').classList.toggle('gone',tab!=='live');
+  document.getElementById('tabInfo').classList.toggle('on',tab==='info');
+  document.getElementById('tabTimes').classList.toggle('on',tab==='times');
+  if(tab==='live'&&map) setTimeout(()=>map.invalidateSize(),50);
+  if(tab==='times'&&!patData) loadTimes();
+}
+
+// ── Data loading ──────────────────────────────────────────────────────────────
+async function loadLive(){
+  try{
+    const res=await fetch(LIVE_URL+'?t='+Date.now());
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const j=await res.json();
+    allBays=j.bays||[];
+    if(!allBays.length)throw new Error('No bay data in live.json');
+    const f=new Date(j.fetched_at);
+    document.getElementById('sTime').textContent=f.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('sDate').textContent=f.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+    document.getElementById('liveLabel').textContent='LIVE';
+    document.getElementById('footerStatus').textContent=`${allBays.length.toLocaleString()} sensors · ${Object.keys(rests).length} with restriction data`;
+    document.getElementById('err').style.display='none';
+    render();
+  }catch(e){
+    showErr(e.message+' — run fetch_live.py');
+    document.getElementById('liveLabel').textContent='STALE';
+  }finally{
+    document.getElementById('loading').classList.add('gone');
   }
 }
 
-// ══ Tab switching ═════════════════════════════════════════════════════════════
-function showTab(tab, btn) {
-  activeTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-live').classList.toggle('hidden', tab!=='live');
-  document.getElementById('tab-patterns').classList.toggle('active', tab==='patterns');
-  if (tab==='patterns' && !patternsData) loadPatterns();
-  if (tab==='live' && map) setTimeout(()=>map.invalidateSize(), 50);
+async function loadRests(){
+  try{
+    const res=await fetch(REST_URL+'?t='+Date.now());
+    if(!res.ok)return;
+    const j=await res.json();
+    rests=j.bays||{};
+    const n=Object.keys(rests).length;
+    document.getElementById('rLoaded').textContent=n?`(${n.toLocaleString()} loaded)`:'(not loaded)';
+    renderInfo();
+    console.log(`Restrictions loaded: ${n}`);
+  }catch(e){
+    console.warn('Restrictions unavailable:',e.message);
+  }
 }
 
-// ══ Shared ════════════════════════════════════════════════════════════════════
-function showErr(msg) {
-  const el = document.getElementById('err');
-  el.style.display = 'block';
-  el.textContent   = msg;
+async function loadTimes(){
+  document.getElementById('timesLoading').textContent='Loading patterns…';
+  try{
+    const res=await fetch(PAT_URL+'?t='+Date.now());
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    patData=await res.json();
+    renderTimes();
+  }catch(e){
+    document.getElementById('timesLoading').innerHTML=`<div>No patterns yet.</div><div style="margin-top:8px;font-size:11px">Run <span style="color:var(--ac)">fetch_history.py</span> after a few days of snapshots.</div>`;
+  }
 }
 
-// ══ Map init ══════════════════════════════════════════════════════════════════
-function initMap() {
-  map = L.map('map', {center:[-37.814,144.963], zoom:14, zoomControl:false});
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom:19, attribution:'© OpenStreetMap contributors'
-  }).addTo(map);
-  layerGroup = L.layerGroup().addTo(map);
-  map.on('zoomend', ()=>drawMarkers(filteredBays()));
+async function doRefresh(){
+  const icon=document.getElementById('ri');
+  icon.classList.add('spin');
+  document.querySelector('.rfBtn').disabled=true;
+  await loadLive();
+  icon.classList.remove('spin');
+  document.querySelector('.rfBtn').disabled=false;
 }
 
-// ══ Boot ══════════════════════════════════════════════════════════════════════
-window.addEventListener('load', async () => {
-  if (typeof L === 'undefined') {
-    showErr('Map library failed to load — check internet connection.');
-    document.getElementById('loading').classList.add('hidden');
-    await loadRestrictions();
-    loadLive();
-    return;
+function showErr(msg){const el=document.getElementById('err');el.style.display='block';el.textContent=msg;}
+
+// ── Map init ──────────────────────────────────────────────────────────────────
+function initMap(){
+  map=L.map('map',{center:[-37.814,144.963],zoom:14,zoomControl:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+  layer=L.layerGroup().addTo(map);
+  map.on('zoomend',()=>drawMarkers(visible()));
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+window.addEventListener('load',async()=>{
+  if(typeof L==='undefined'){
+    showErr('Map library failed — check internet.');
+    document.getElementById('loading').classList.add('gone');
+    await loadRests(); loadLive(); return;
   }
   initMap();
-  // Load restrictions first so popups are ready when map renders
-  await loadRestrictions();
+  await loadRests();   // load restrictions first so popups & info tab are ready
   loadLive();
 });
 </script>
