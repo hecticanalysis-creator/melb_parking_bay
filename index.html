@@ -253,8 +253,8 @@ footer{display:flex;align-items:center;justify-content:space-between;padding:7px
       <div class="day-summary" id="day-summary"></div>
 
       <div style="padding:12px 0 4px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.7">
-        Based on 42M parking events from 2019 City of Melbourne dataset.<br>
-        Index shows relative busyness — 100 = busiest hour of that day.
+        Based on <span id="p-snap-count">—</span> snapshots from your own fetch_live.py runs.<br>
+        Green = easy to park · Red = hard to park. Run fetch_history.py weekly to refresh.
       </div>
     </div>
   </div>
@@ -477,12 +477,12 @@ function hourLabel(h) {
 }
 
 function heatmapColor(pct) {
-  // 0=very free (deep green) → 100=very busy (deep red)
-  if (pct < 20)  return '#0a3d1f';
-  if (pct < 40)  return '#1a6b35';
-  if (pct < 55)  return '#4caf50';
-  if (pct < 70)  return '#ffb300';
-  if (pct < 85)  return '#f4511e';
+  // pct = % available — high is good (green), low is bad (red)
+  if (pct >= 80) return '#0a3d1f';
+  if (pct >= 60) return '#1a6b35';
+  if (pct >= 45) return '#4caf50';
+  if (pct >= 30) return '#ffb300';
+  if (pct >= 15) return '#f4511e';
   return '#b71c1c';
 }
 
@@ -493,11 +493,11 @@ function renderHeatmap(dayData) {
 
   const hm = document.getElementById('heatmap');
   hm.innerHTML = hours.map((h,i) => {
-    const col = heatmapColor(h.pct_occupied);
+    const col = heatmapColor(h.pct_avail);
     const sel = selectedHour===h.hour ? ' selected' : '';
     return `<div class="hm-cell${sel}" style="background:${col}"
       onclick="selectHour(${h.hour})"
-      title="${hourLabel(h.hour)} · ${h.pct_occupied}% busy"></div>`;
+      title="${hourLabel(h.hour)} · ${h.pct_avail}% available · ${h.samples} samples"></div>`;
   }).join('');
 
   const lbl = document.getElementById('hm-labels');
@@ -525,11 +525,13 @@ function updateHourCard(dayData) {
   }
   const h = dayData.hours.find(x => x.hour === selectedHour);
   if (!h) return;
-  const pct = h.pct_occupied;
-  const col = pct>=70?'var(--red)':pct>=40?'var(--amber)':'var(--green)';
-  const label = pct>=85?'Very busy — avoid':pct>=70?'Busy':pct>=40?'Moderate':pct>=20?'Quiet':'Very quiet — great time';
+  const pct = h.pct_avail;
+  const samples = h.samples || 0;
+  const col = pct>=60?'var(--green)':pct>=30?'var(--amber)':'var(--red)';
+  const label = pct>=80?'Very easy to park':pct>=60?'Good availability':pct>=30?'Getting busy':pct>=15?'Hard to find a spot':'Avoid — very busy';
+  const sampleNote = samples > 0 ? ` · ${samples} observations` : ' · no data yet';
   document.getElementById('hc-time').textContent = `${hourLabel(selectedHour)} on ${dayData.label}`;
-  document.getElementById('hc-sub').textContent  = `${label} · busyness index ${pct}`;
+  document.getElementById('hc-sub').textContent  = `${label} · ${pct}% available${sampleNote}`;
   document.getElementById('hc-time').style.color = col;
   hc.style.borderColor = col;
 }
@@ -537,11 +539,11 @@ function updateHourCard(dayData) {
 function renderDaySummary() {
   const el = document.getElementById('day-summary');
   el.innerHTML = patternsData.days.map(d => {
-    const range = d.worst_hour.pct_occupied - d.best_hour.pct_occupied;
+    const range = d.best_hour.pct_avail - d.worst_hour.pct_avail;
     return `<div class="ds-row" onclick="selectDay(${d.day})" style="cursor:pointer">
       <div class="ds-day">${d.label}</div>
       <div class="ds-best">Best ${d.best_hour.label}</div>
-      <div class="ds-bar-wrap"><div class="ds-bar" style="width:${d.worst_hour.pct_occupied}%"></div></div>
+      <div class="ds-bar-wrap"><div class="ds-bar" style="width:${100 - d.worst_hour.pct_avail}%"></div></div>
       <div class="ds-worst">Busy ${d.worst_hour.label}</div>
     </div>`;
   }).join('');
@@ -557,11 +559,11 @@ function selectDay(dow) {
 function renderPatterns() {
   const p = patternsData;
   document.getElementById('p-best-time').textContent  = p.overall_best.hour_label;
-  document.getElementById('p-best-day').textContent   = p.overall_best.day_label + ' · quietest hour';
+  document.getElementById('p-best-day').textContent   = p.overall_best.day_label + ` · ${p.overall_best.pct}% available`;
   document.getElementById('p-worst-time').textContent = p.overall_worst.hour_label;
-  document.getElementById('p-worst-day').textContent  = p.overall_worst.day_label + ' · peak hour';
+  document.getElementById('p-worst-day').textContent  = p.overall_worst.day_label + ` · ${p.overall_worst.pct}% available`;
 
-  // Day selector buttons
+  document.getElementById('p-snap-count').textContent = (p.total_snapshots || 0).toLocaleString();
   const scroll = document.getElementById('day-scroll');
   scroll.innerHTML = p.days.map(d =>
     `<button class="day-btn${d.day===activeDay?' active':''}" data-day="${d.day}" onclick="selectDay(${d.day})">${d.label}</button>`
