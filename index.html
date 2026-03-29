@@ -13,157 +13,171 @@
 <style>
 :root {
   --bg:#0a0a0a; --surface:#141414; --surface2:#1c1c1c; --surface3:#222;
-  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.14);
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
   --text:#f0ede8; --muted:#6b6b6b; --muted2:#999;
   --green:#00e676; --green-dim:rgba(0,230,118,0.12);
   --red:#ff4f4f;   --red-dim:rgba(255,79,79,0.12);
   --amber:#ffb300; --amber-dim:rgba(255,179,0,0.12);
+  --blue:#4fc3f7;  --blue-dim:rgba(79,195,247,0.12);
+  --purple:#ce93d8;--purple-dim:rgba(206,147,216,0.12);
   --accent:#e8ff47;
-  --mono:'DM Mono',monospace;
-  --sans:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif;
   --r:12px; --rs:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;overflow:hidden}
 #app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto}
 
-/* ── header ── */
-header{padding:14px 14px 0;flex-shrink:0}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+/* header */
+header{padding:12px 14px 0;flex-shrink:0}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .wordmark{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
 .live-badge{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{animation:spin .7s linear infinite;display:inline-block}
 
-/* ── tab nav ── */
-.tab-nav{display:flex;gap:4px;margin-bottom:12px;background:var(--surface);border-radius:var(--rs);padding:3px;border:0.5px solid var(--border)}
+/* tab nav */
+.tab-nav{display:flex;gap:4px;margin-bottom:10px;background:var(--surface);border-radius:var(--rs);padding:3px;border:0.5px solid var(--border)}
 .tab-btn{flex:1;font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:6px 4px;border:none;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;transition:all .15s;text-transform:uppercase}
 .tab-btn.active{background:var(--surface2);color:var(--text);border:0.5px solid var(--border2)}
-.tab-btn:active{transform:scale(.97)}
 
-/* ── stats ── */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.stat{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rs);padding:9px 11px}
-.stat-label{font-size:10px;font-family:var(--mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:3px}
-.stat-value{font-size:20px;font-weight:300;font-family:var(--mono);line-height:1}
-.stat-value.green{color:var(--green)} .stat-value.red{color:var(--red)}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px}
+.stat{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rs);padding:8px 10px}
+.stat-label{font-size:10px;font-family:var(--mono);letter-spacing:.05em;color:var(--muted);text-transform:uppercase;margin-bottom:2px}
+.stat-value{font-size:19px;font-weight:300;font-family:var(--mono);line-height:1}
+.stat-value.green{color:var(--green)} .stat-value.red{color:var(--red)} .stat-value.amber{color:var(--amber)}
 .stat-sub{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
 
-/* ── suburb pills ── */
-.suburb-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:8px;scrollbar-width:none}
-.suburb-scroll::-webkit-scrollbar{display:none}
-.s-pill{flex-shrink:0;font-size:12px;font-family:var(--mono);padding:5px 11px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px}
+/* suburb pills */
+.scroll-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;margin-bottom:7px;scrollbar-width:none}
+.scroll-row::-webkit-scrollbar{display:none}
+.s-pill{flex-shrink:0;font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
 .s-pill.active{background:var(--accent);color:#0a0a0a;border-color:var(--accent);font-weight:500}
-.s-pill:active{transform:scale(.96)}
 .s-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 
-/* ── status filter ── */
-.filter-row{display:flex;gap:6px;margin-bottom:8px}
-.f-pill{flex:1;text-align:center;font-size:12px;font-family:var(--mono);padding:6px 4px;border-radius:var(--rs);border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
-.f-pill.active.all{background:var(--surface2);color:var(--text);border-color:var(--border2)}
-.f-pill.active.free{background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.3)}
-.f-pill.active.occ{background:var(--red-dim);color:var(--red);border-color:rgba(255,79,79,.3)}
+/* filter tags */
+.filter-section{margin-bottom:8px}
+.filter-label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
+.tag-row{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tag:active{transform:scale(.96)}
+.tag.active.status-all   {background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.tag.active.status-free  {background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.35)}
+.tag.active.status-occ   {background:var(--red-dim);color:var(--red);border-color:rgba(255,79,79,.35)}
+.tag.active.type-free    {background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.35)}
+.tag.active.type-paid    {background:var(--amber-dim);color:var(--amber);border-color:rgba(255,179,0,.35)}
+.tag.active.type-dis     {background:var(--blue-dim);color:var(--blue);border-color:rgba(79,195,247,.35)}
+.tag.active.type-load    {background:var(--purple-dim);color:var(--purple);border-color:rgba(206,147,216,.35)}
+.tag.active.dur-any      {background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.tag.active.dur-30       {background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.35)}
+.tag.active.dur-1h       {background:var(--green-dim);color:var(--green);border-color:rgba(0,230,118,.35)}
+.tag.active.dur-2h       {background:var(--amber-dim);color:var(--amber);border-color:rgba(255,179,0,.35)}
+.tag.active.dur-long     {background:var(--red-dim);color:var(--red);border-color:rgba(255,79,79,.35)}
 
-/* ── map ── */
+/* map */
 #map-wrap{flex:1;position:relative;margin:0 14px;border-radius:var(--r);overflow:hidden;border:0.5px solid var(--border);min-height:0}
 #map{width:100%;height:100%}
 .leaflet-tile{filter:brightness(.7) saturate(.5) hue-rotate(195deg)}
 .leaflet-control-zoom{display:none}
 .leaflet-control-attribution{background:rgba(10,10,10,.75)!important;color:#444!important;font-size:9px!important}
 .leaflet-control-attribution a{color:#555!important}
-.leaflet-popup-content-wrapper{background:var(--surface)!important;border:0.5px solid var(--border)!important;border-radius:var(--rs)!important;box-shadow:0 8px 24px rgba(0,0,0,.5)!important;color:var(--text)!important;font-family:var(--mono)!important;font-size:12px!important}
-.leaflet-popup-tip{background:var(--surface)!important}
-.leaflet-popup-close-button{color:var(--muted)!important}
-.map-legend{position:absolute;bottom:10px;left:10px;z-index:10;background:rgba(10,10,10,.8);backdrop-filter:blur(6px);border-radius:var(--rs);padding:7px 10px;display:flex;flex-direction:column;gap:4px;border:0.5px solid var(--border)}
-.leg-row{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--muted)}
-.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.leaflet-popup-content-wrapper{background:#1a1a1a!important;border:0.5px solid rgba(255,255,255,.15)!important;border-radius:10px!important;box-shadow:0 8px 32px rgba(0,0,0,.6)!important;color:var(--text)!important;font-family:var(--mono)!important;font-size:12px!important;padding:0!important}
+.leaflet-popup-content{margin:0!important;min-width:190px}
+.leaflet-popup-tip-container{display:none}
+.leaflet-popup-close-button{color:#666!important;top:8px!important;right:10px!important;font-size:16px!important}
+.map-legend{position:absolute;bottom:10px;left:10px;z-index:10;background:rgba(10,10,10,.85);backdrop-filter:blur(8px);border-radius:var(--rs);padding:8px 10px;display:flex;flex-direction:column;gap:4px;border:0.5px solid var(--border)}
+.leg-row{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;color:var(--muted)}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 #map-overlay{position:absolute;inset:0;background:var(--surface);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--muted);z-index:5;transition:opacity .3s;pointer-events:none}
 #map-overlay.hidden{opacity:0}
 
-/* ── bottom sheet ── */
+/* popup card */
+.popup-card{padding:12px 14px}
+.popup-status{font-size:13px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.popup-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.popup-type{font-size:12px;font-weight:500;color:var(--text);margin-bottom:3px}
+.popup-desc{font-size:11px;color:var(--muted2);margin-bottom:6px;line-height:1.5}
+.popup-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.popup-tag{font-size:10px;padding:2px 7px;border-radius:999px;font-family:var(--mono)}
+.popup-tag.paid   {background:var(--amber-dim);color:var(--amber)}
+.popup-tag.free   {background:var(--green-dim);color:var(--green)}
+.popup-tag.dis    {background:var(--blue-dim);color:var(--blue)}
+.popup-tag.load   {background:var(--purple-dim);color:var(--purple)}
+.popup-tag.nopark {background:var(--red-dim);color:var(--red)}
+.popup-windows{font-size:10px;color:var(--muted);line-height:1.7;border-top:0.5px solid var(--border);padding-top:6px;margin-top:2px}
+.popup-row{display:flex;justify-content:space-between;gap:8px}
+.popup-row span:last-child{color:var(--muted2);text-align:right}
+
+/* bottom sheet */
 #sheet{flex-shrink:0;background:var(--surface);border-top:0.5px solid var(--border);border-radius:var(--r) var(--r) 0 0;overflow:hidden;z-index:20}
-.sheet-handle{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;cursor:pointer;user-select:none}
+.sheet-handle{display:flex;align-items:center;justify-content:space-between;padding:9px 14px 7px;cursor:pointer;user-select:none}
 .sheet-grip{width:32px;height:3px;background:var(--border);border-radius:2px;margin-bottom:5px}
-.sheet-title{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.sheet-title{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
 .sheet-toggle{font-size:11px;color:var(--muted);font-family:var(--mono)}
-#zone-list{overflow-y:auto;max-height:200px;padding-bottom:12px}
-.z-row{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:0.5px solid var(--border)}
+#zone-list{overflow-y:auto;max-height:170px;padding-bottom:10px}
+.z-row{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:0.5px solid var(--border)}
 .z-row:last-child{border-bottom:none}
 .z-name{font-family:var(--mono);font-size:12px;color:var(--text);margin-bottom:1px}
-.z-count{font-size:11px;color:var(--muted);font-family:var(--mono)}
-.z-right{display:flex;align-items:center;gap:8px}
-.bar{width:50px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.z-count{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.z-right{display:flex;align-items:center;gap:7px}
+.bar{width:46px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
 .bar-fill{height:100%;border-radius:2px}
-.pct{font-family:var(--mono);font-size:11px;min-width:30px;text-align:right}
+.pct{font-family:var(--mono);font-size:11px;min-width:28px;text-align:right}
 
-/* ── BEST TIMES TAB ── */
+/* best times tab */
 #tab-patterns{display:none;flex:1;overflow-y:auto;padding:0 14px 14px;min-height:0}
 #tab-patterns.active{display:block}
-
-.best-banner{background:var(--green-dim);border:0.5px solid rgba(0,230,118,.25);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
-.best-banner-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--green);text-transform:uppercase;margin-bottom:6px}
-.best-banner-value{font-size:22px;font-weight:300;font-family:var(--mono);color:var(--green);margin-bottom:2px}
-.best-banner-sub{font-size:12px;color:var(--muted);font-family:var(--mono)}
-
-.worst-banner{background:var(--red-dim);border:0.5px solid rgba(255,79,79,.25);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
-.worst-banner-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--red);text-transform:uppercase;margin-bottom:6px}
-.worst-banner-value{font-size:22px;font-weight:300;font-family:var(--mono);color:var(--red);margin-bottom:2px}
-.worst-banner-sub{font-size:12px;color:var(--muted);font-family:var(--mono)}
-
-.banner-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-
-.section-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
-
-/* day selector */
-.day-scroll{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.banner-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.best-banner{background:var(--green-dim);border:0.5px solid rgba(0,230,118,.25);border-radius:var(--r);padding:12px 14px}
+.best-banner-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--green);text-transform:uppercase;margin-bottom:4px}
+.best-banner-value{font-size:20px;font-weight:300;font-family:var(--mono);color:var(--green);margin-bottom:1px}
+.best-banner-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.worst-banner{background:var(--red-dim);border:0.5px solid rgba(255,79,79,.25);border-radius:var(--r);padding:12px 14px}
+.worst-banner-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--red);text-transform:uppercase;margin-bottom:4px}
+.worst-banner-value{font-size:20px;font-weight:300;font-family:var(--mono);color:var(--red);margin-bottom:1px}
+.worst-banner-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.section-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;color:var(--muted);text-transform:uppercase;margin:12px 0 7px}
+.day-scroll{display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
 .day-scroll::-webkit-scrollbar{display:none}
-.day-btn{flex-shrink:0;font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
+.day-btn{flex-shrink:0;font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:999px;border:0.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
 .day-btn.active{background:var(--accent);color:#0a0a0a;border-color:var(--accent);font-weight:500}
-.day-btn:active{transform:scale(.96)}
-
-/* heatmap grid */
-.heatmap{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:6px}
-.hm-cell{height:28px;border-radius:3px;cursor:pointer;transition:opacity .15s;position:relative}
+.heatmap{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:4px}
+.hm-cell{height:26px;border-radius:3px;cursor:pointer;transition:opacity .15s}
 .hm-cell:hover{opacity:.7}
 .hm-cell.selected{outline:2px solid var(--accent);outline-offset:1px}
-
-.hm-labels{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:14px}
+.hm-labels{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin-bottom:12px}
 .hm-label{font-family:var(--mono);font-size:8px;color:var(--muted);text-align:center;overflow:hidden}
-
-/* hour detail card */
-.hour-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;min-height:70px}
-.hour-card-time{font-family:var(--mono);font-size:20px;font-weight:300;margin-bottom:4px}
-.hour-card-sub{font-size:12px;color:var(--muted);font-family:var(--mono)}
-
-/* day summary list */
-.day-summary{display:flex;flex-direction:column;gap:6px}
-.ds-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border-radius:var(--rs);border:0.5px solid var(--border)}
-.ds-day{font-family:var(--mono);font-size:12px;color:var(--text);width:30px;flex-shrink:0}
+.hour-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;transition:border-color .2s}
+.hour-card-time{font-family:var(--mono);font-size:18px;font-weight:300;margin-bottom:3px;transition:color .2s}
+.hour-card-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.day-summary{display:flex;flex-direction:column;gap:5px}
+.ds-row{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--surface);border-radius:var(--rs);border:0.5px solid var(--border);cursor:pointer}
+.ds-day{font-family:var(--mono);font-size:12px;color:var(--text);width:28px;flex-shrink:0}
 .ds-best{font-family:var(--mono);font-size:11px;color:var(--green);flex:1}
-.ds-worst{font-family:var(--mono);font-size:11px;color:var(--red);text-align:right}
-.ds-bar-wrap{flex:2;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.ds-bar-wrap{flex:2;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
 .ds-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),var(--amber),var(--red))}
+.ds-worst{font-family:var(--mono);font-size:11px;color:var(--red);text-align:right}
+.no-data{padding:32px 14px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.9}
 
-.no-data{padding:40px 16px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.8}
-
-/* ── footer ── */
-footer{display:flex;align-items:center;justify-content:space-between;padding:7px 14px 10px;flex-shrink:0;background:var(--surface);gap:8px;border-top:0.5px solid var(--border)}
+/* footer */
+footer{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 10px;flex-shrink:0;background:var(--surface);gap:8px;border-top:0.5px solid var(--border)}
 .footer-status{font-family:var(--mono);font-size:10px;color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .refresh-btn{font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:999px;border:0.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;flex-shrink:0;transition:all .15s}
 .refresh-btn:active{background:var(--surface2);color:var(--text)}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinning{animation:spin .7s linear infinite;display:inline-block}
 
-/* ── loading ── */
+/* loading */
 #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;transition:opacity .4s}
 #loading.hidden{opacity:0;pointer-events:none}
-.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+.spinner{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 .loading-text{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em}
 
-/* ── error ── */
-#err{display:none;margin:0 0 8px;padding:9px 11px;border-radius:var(--rs);background:var(--red-dim);border:0.5px solid rgba(255,79,79,.3);font-family:var(--mono);font-size:11px;color:var(--red);line-height:1.6}
+/* error */
+#err{display:none;margin:0 0 7px;padding:8px 11px;border-radius:var(--rs);background:var(--red-dim);border:0.5px solid rgba(255,79,79,.3);font-family:var(--mono);font-size:11px;color:var(--red);line-height:1.5}
 
-/* ── tab panels ── */
+/* live tab wrapper */
 #tab-live{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
 #tab-live.hidden{display:none}
 </style>
@@ -177,7 +191,6 @@ footer{display:flex;align-items:center;justify-content:space-between;padding:7px
       <div class="wordmark">Melb Parking</div>
       <div class="live-badge"><div class="live-dot"></div><span id="live-label">LIVE</span></div>
     </div>
-    <!-- Tab nav -->
     <div class="tab-nav">
       <button class="tab-btn active" onclick="showTab('live',this)">Live Map</button>
       <button class="tab-btn" onclick="showTab('patterns',this)">Best Times</button>
@@ -188,28 +201,66 @@ footer{display:flex;align-items:center;justify-content:space-between;padding:7px
   <!-- ══ LIVE TAB ══════════════════════════════════════════════════════════ -->
   <div id="tab-live">
     <div style="padding:0 14px">
+
+      <!-- Stats -->
       <div class="stats">
         <div class="stat"><div class="stat-label">Available</div><div class="stat-value green" id="s-avail">—</div><div class="stat-sub" id="s-pct">—</div></div>
         <div class="stat"><div class="stat-label">Occupied</div><div class="stat-value red"   id="s-occ">—</div><div class="stat-sub" id="s-total">—</div></div>
-        <div class="stat"><div class="stat-label">Updated</div><div class="stat-value" id="s-time" style="font-size:13px;padding-top:4px">—</div><div class="stat-sub" id="s-date">—</div></div>
+        <div class="stat"><div class="stat-label">Updated</div><div class="stat-value amber" id="s-time" style="font-size:13px;padding-top:4px">—</div><div class="stat-sub" id="s-date">—</div></div>
       </div>
-      <div class="suburb-scroll" id="suburb-scroll"></div>
-      <div class="filter-row">
-        <button class="f-pill all active" onclick="setFilter('all',this)">All</button>
-        <button class="f-pill free" onclick="setFilter('free',this)">Available</button>
-        <button class="f-pill occ"  onclick="setFilter('occ',this)">Occupied</button>
+
+      <!-- Suburb filter -->
+      <div class="scroll-row" id="suburb-scroll"></div>
+
+      <!-- Status filter -->
+      <div class="filter-section">
+        <div class="filter-label">Availability</div>
+        <div class="tag-row">
+          <button class="tag status-all active"  onclick="setStatus('all',this)">All bays</button>
+          <button class="tag status-free"         onclick="setStatus('free',this)">Available</button>
+          <button class="tag status-occ"          onclick="setStatus('occ',this)">Occupied</button>
+        </div>
       </div>
+
+      <!-- Type filter -->
+      <div class="filter-section">
+        <div class="filter-label">Bay type</div>
+        <div class="tag-row" id="type-tags">
+          <button class="tag type-free active"  data-type="all"   onclick="setType('all',this)">All types</button>
+          <button class="tag type-free"          data-type="free"  onclick="setType('free',this)">Free / timed</button>
+          <button class="tag type-paid"          data-type="paid"  onclick="setType('paid',this)">Paid meter</button>
+          <button class="tag type-dis"           data-type="dis"   onclick="setType('dis',this)">Accessible</button>
+          <button class="tag type-load"          data-type="load"  onclick="setType('load',this)">Loading</button>
+        </div>
+      </div>
+
+      <!-- Duration filter -->
+      <div class="filter-section">
+        <div class="filter-label">Time limit</div>
+        <div class="tag-row">
+          <button class="tag dur-any active"  onclick="setDur('any',this)">Any</button>
+          <button class="tag dur-30"           onclick="setDur('30',this)">≤ 30 min</button>
+          <button class="tag dur-1h"           onclick="setDur('1h',this)">≤ 1 hr</button>
+          <button class="tag dur-2h"           onclick="setDur('2h',this)">≤ 2 hr</button>
+          <button class="tag dur-long"         onclick="setDur('long',this)">&gt; 2 hr</button>
+        </div>
+      </div>
+
     </div>
 
+    <!-- Map -->
     <div id="map-wrap">
       <div id="map-overlay">Loading map…</div>
       <div id="map"></div>
-      <div class="map-legend">
+      <div class="map-legend" id="map-legend">
         <div class="leg-row"><div class="leg-dot" style="background:#00e676"></div>Available</div>
         <div class="leg-row"><div class="leg-dot" style="background:#ff4f4f"></div>Occupied</div>
+        <div class="leg-row" id="leg-paid" style="display:none"><div class="leg-dot" style="background:#ffb300"></div>Paid meter</div>
+        <div class="leg-row" id="leg-dis"  style="display:none"><div class="leg-dot" style="background:#4fc3f7"></div>Accessible</div>
       </div>
     </div>
 
+    <!-- Bottom sheet -->
     <div id="sheet">
       <div class="sheet-handle" onclick="toggleSheet()">
         <div style="flex:1"><div class="sheet-grip"></div><div class="sheet-title" id="sheet-title">Zones by availability</div></div>
@@ -223,55 +274,50 @@ footer{display:flex;align-items:center;justify-content:space-between;padding:7px
   <div id="tab-patterns">
     <div id="patterns-loading" class="no-data">Loading historical patterns…</div>
     <div id="patterns-content" style="display:none">
-
       <div class="banner-row">
         <div class="best-banner">
-          <div class="best-banner-label">Best time to park</div>
+          <div class="best-banner-label">Best time</div>
           <div class="best-banner-value" id="p-best-time">—</div>
-          <div class="best-banner-sub" id="p-best-day">—</div>
+          <div class="best-banner-sub"   id="p-best-day">—</div>
         </div>
         <div class="worst-banner">
-          <div class="worst-banner-label">Avoid parking</div>
+          <div class="worst-banner-label">Avoid</div>
           <div class="worst-banner-value" id="p-worst-time">—</div>
-          <div class="worst-banner-sub" id="p-worst-day">—</div>
+          <div class="worst-banner-sub"   id="p-worst-day">—</div>
         </div>
       </div>
-
-      <div class="section-label">Tap a day to explore</div>
+      <div class="section-label">Pick a day</div>
       <div class="day-scroll" id="day-scroll"></div>
-
-      <div class="section-label" id="heatmap-label">Busyness by hour — Monday</div>
-      <div class="heatmap" id="heatmap"></div>
+      <div class="section-label" id="heatmap-label">Availability by hour</div>
+      <div class="heatmap"   id="heatmap"></div>
       <div class="hm-labels" id="hm-labels"></div>
-
       <div class="hour-card" id="hour-card">
         <div class="hour-card-time" id="hc-time">Tap a cell above</div>
-        <div class="hour-card-sub" id="hc-sub">to see busyness detail</div>
+        <div class="hour-card-sub"  id="hc-sub">to see detail for that hour</div>
       </div>
-
       <div class="section-label">All days at a glance</div>
       <div class="day-summary" id="day-summary"></div>
-
-      <div style="padding:12px 0 4px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.7">
-        Based on <span id="p-snap-count">—</span> snapshots from your own fetch_live.py runs.<br>
-        Green = easy to park · Red = hard to park. Run fetch_history.py weekly to refresh.
+      <div style="padding:10px 0 4px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.8">
+        <span id="p-snap-count">—</span> snapshots from your fetch_live.py runs.<br>
+        Green = easy to park · Red = hard. Run fetch_history.py to refresh.
       </div>
     </div>
   </div>
 
-  <!-- ══ FOOTER ════════════════════════════════════════════════════════════ -->
+  <!-- Footer -->
   <footer>
-    <div class="footer-status" id="footer-status">City of Melbourne Open Data · No API key required</div>
+    <div class="footer-status" id="footer-status">City of Melbourne Open Data</div>
     <button class="refresh-btn" onclick="refreshLive()"><span id="ri">↻</span> Refresh</button>
   </footer>
 </div>
 
 <script>
-// ── Data sources (same-origin, no CORS, no tokens) ───────────────────────────
-const LIVE_URL     = 'data/live.json';
-const PATTERNS_URL = 'data/patterns.json';
+// ══ Data sources ══════════════════════════════════════════════════════════════
+const LIVE_URL         = 'data/live.json';
+const PATTERNS_URL     = 'data/patterns.json';
+const RESTRICTIONS_URL = 'data/restrictions.json';
 
-// ── Suburb bounds ─────────────────────────────────────────────────────────────
+// ══ Suburb config ═════════════════════════════════════════════════════════════
 const SUBURBS = {
   'All':        { center:[-37.814,144.963], zoom:14, bounds:null },
   'CBD':        { center:[-37.814,144.963], zoom:15, bounds:{s:-37.823,n:-37.806,w:144.952,e:144.976} },
@@ -283,30 +329,39 @@ const SUBURBS = {
   'North Melb': { center:[-37.800,144.949], zoom:15, bounds:{s:-37.810,n:-37.793,w:144.940,e:144.960} },
 };
 
-// ── State ─────────────────────────────────────────────────────────────────────
-let allBays = [], filter = 'all', activeSuburb = 'All';
+// ══ State ═════════════════════════════════════════════════════════════════════
+let allBays = [], restrictions = {};
+let filterStatus = 'all', filterType = 'all', filterDur = 'any';
+let activeSuburb = 'All', activeTab = 'live';
 let map, layerGroup, sheetOpen = true;
 let patternsData = null, activeDay = 0, selectedHour = null;
-let activeTab = 'live';
 
-// ══ TAB LOGIC ═════════════════════════════════════════════════════════════════
-function showTab(tab, btn) {
-  activeTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-live').classList.toggle('hidden', tab !== 'live');
-  document.getElementById('tab-patterns').classList.toggle('active', tab === 'patterns');
-  document.getElementById('refresh-btn-wrap') && null;
-
-  if (tab === 'patterns' && !patternsData) {
-    loadPatterns();
-  }
-  if (tab === 'live' && map) {
-    setTimeout(() => map.invalidateSize(), 50);
-  }
+// ══ Filtering logic ═══════════════════════════════════════════════════════════
+function getBayRestriction(bay) {
+  return restrictions[String(bay.id)] || null;
 }
 
-// ══ LIVE TAB ══════════════════════════════════════════════════════════════════
+function matchesTypeFilter(bay) {
+  if (filterType === 'all') return true;
+  const r = getBayRestriction(bay);
+  if (!r) return filterType === 'free'; // no restriction data = assume free
+  if (filterType === 'free')  return r.free && !r.paid && !r.loading && !r.disability;
+  if (filterType === 'paid')  return r.paid;
+  if (filterType === 'dis')   return r.disability;
+  if (filterType === 'load')  return r.loading;
+  return true;
+}
+
+function matchesDurFilter(bay) {
+  if (filterDur === 'any') return true;
+  const r = getBayRestriction(bay);
+  if (!r || r.dur_min == null) return filterDur === 'any';
+  if (filterDur === '30')  return r.dur_min <= 30;
+  if (filterDur === '1h')  return r.dur_min <= 60;
+  if (filterDur === '2h')  return r.dur_min <= 120;
+  if (filterDur === 'long') return r.dur_min > 120;
+  return true;
+}
 
 function filteredBays() {
   let bays = allBays;
@@ -315,14 +370,34 @@ function filteredBays() {
     const {s:south,n:north,w:west,e:east} = s.bounds;
     bays = bays.filter(b => b.lat>=south && b.lat<=north && b.lon>=west && b.lon<=east);
   }
-  if (filter==='free') bays = bays.filter(b => b.status==='Unoccupied');
-  if (filter==='occ')  bays = bays.filter(b => b.status==='Present');
+  if (filterStatus === 'free') bays = bays.filter(b => b.status==='Unoccupied');
+  if (filterStatus === 'occ')  bays = bays.filter(b => b.status==='Present');
+  bays = bays.filter(matchesTypeFilter);
+  bays = bays.filter(matchesDurFilter);
   return bays;
 }
 
-function setFilter(f, el) {
-  filter = f;
-  document.querySelectorAll('.f-pill').forEach(p=>p.classList.remove('active'));
+// ══ Filter setters ════════════════════════════════════════════════════════════
+function setStatus(v, el) {
+  filterStatus = v;
+  document.querySelectorAll('.tag[class*="status-"]').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderLive();
+}
+
+function setType(v, el) {
+  filterType = v;
+  document.querySelectorAll('.tag[data-type]').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  // Update legend visibility
+  document.getElementById('leg-paid').style.display = (v==='paid'||v==='all') ? 'flex' : 'none';
+  document.getElementById('leg-dis').style.display  = (v==='dis'||v==='all')  ? 'flex' : 'none';
+  renderLive();
+}
+
+function setDur(v, el) {
+  filterDur = v;
+  document.querySelectorAll('.tag[class*="dur-"]').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   renderLive();
 }
@@ -335,12 +410,34 @@ function setSuburb(name) {
   renderLive();
 }
 
+// ══ Helpers ═══════════════════════════════════════════════════════════════════
 function availPct(bays) {
   if (!bays.length) return 0;
   return Math.round(bays.filter(b=>b.status==='Unoccupied').length / bays.length * 100);
 }
 function dotColor(pct) { return pct>=50?'#00e676':pct>=20?'#ffb300':'#ff4f4f'; }
 
+function durLabel(min) {
+  if (min == null) return null;
+  if (min < 60)   return `${min}min`;
+  if (min === 60)  return '1hr';
+  if (min % 60 === 0) return `${min/60}hr`;
+  return `${Math.floor(min/60)}hr ${min%60}m`;
+}
+
+function formatWindows(windows) {
+  const DAY = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  return windows.slice(0,3).map(w => {
+    const days = w.from_day!=null && w.to_day!=null
+      ? (w.from_day===w.to_day ? DAY[w.from_day] : `${DAY[w.from_day]}–${DAY[w.to_day]}`)
+      : '';
+    const times = w.start && w.end ? `${w.start}–${w.end}` : '';
+    const dur   = w.dur_min ? durLabel(w.dur_min) : '';
+    return [w.desc||w.type||'', days, times, dur].filter(Boolean).join(' · ');
+  }).join('\n');
+}
+
+// ══ Stats ═════════════════════════════════════════════════════════════════════
 function updateStats(bays) {
   const total = bays.length;
   const avail = bays.filter(b=>b.status==='Unoccupied').length;
@@ -348,10 +445,11 @@ function updateStats(bays) {
   const pct   = total ? Math.round(avail/total*100) : 0;
   document.getElementById('s-avail').textContent = avail.toLocaleString();
   document.getElementById('s-occ').textContent   = occ.toLocaleString();
-  document.getElementById('s-pct').textContent   = pct + '% free';
-  document.getElementById('s-total').textContent = total.toLocaleString() + ' bays';
+  document.getElementById('s-pct').textContent   = pct+'% free';
+  document.getElementById('s-total').textContent = total.toLocaleString()+' shown';
 }
 
+// ══ Suburb pills ══════════════════════════════════════════════════════════════
 function buildSuburbPills() {
   const wrap = document.getElementById('suburb-scroll');
   wrap.innerHTML = Object.keys(SUBURBS).map(name => {
@@ -366,27 +464,82 @@ function buildSuburbPills() {
   }).join('');
 }
 
+// ══ Map markers ═══════════════════════════════════════════════════════════════
+function markerColor(bay) {
+  const r = getBayRestriction(bay);
+  if (filterType !== 'all') {
+    // When type-filtered just use status colour
+    return bay.status==='Unoccupied' ? '#00e676' : '#ff4f4f';
+  }
+  // Default: colour by type if restrictions loaded, else by status
+  if (r) {
+    if (r.disability) return bay.status==='Unoccupied' ? '#4fc3f7' : '#1565c0';
+    if (r.paid)       return bay.status==='Unoccupied' ? '#ffb300' : '#e65100';
+    if (r.loading)    return bay.status==='Unoccupied' ? '#ce93d8' : '#6a1b9a';
+  }
+  return bay.status==='Unoccupied' ? '#00e676' : '#ff4f4f';
+}
+
+function buildPopup(bay) {
+  const r  = getBayRestriction(bay);
+  const isAvail = bay.status === 'Unoccupied';
+  const statusColor = isAvail ? '#00e676' : '#ff4f4f';
+  const statusText  = isAvail ? 'Available' : 'Occupied';
+  const ts = bay.ts ? new Date(bay.ts).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}) : '—';
+
+  let typeHtml = '', tagsHtml = '', windowsHtml = '';
+
+  if (r) {
+    typeHtml = `<div class="popup-type">${r.type || r.desc || 'Unknown type'}</div>
+      <div class="popup-desc">${r.desc || ''}</div>`;
+
+    const tags = [];
+    if (r.paid)       tags.push(`<span class="popup-tag paid">Paid meter</span>`);
+    if (r.free && !r.paid) tags.push(`<span class="popup-tag free">${r.dur_min ? durLabel(r.dur_min)+' limit' : 'Timed free'}</span>`);
+    if (r.disability) tags.push(`<span class="popup-tag dis">Accessible</span>`);
+    if (r.loading)    tags.push(`<span class="popup-tag load">Loading zone</span>`);
+    if (r.no_park)    tags.push(`<span class="popup-tag nopark">No parking</span>`);
+    if (tags.length)  tagsHtml = `<div class="popup-tags">${tags.join('')}</div>`;
+
+    if (r.windows && r.windows.length) {
+      const rows = formatWindows(r.windows).split('\n').filter(Boolean);
+      windowsHtml = `<div class="popup-windows">${rows.map(row=>`<div>${row}</div>`).join('')}</div>`;
+    }
+  } else {
+    typeHtml = `<div class="popup-desc" style="color:var(--muted)">Restriction data not loaded.<br>Run fetch_restrictions.py</div>`;
+  }
+
+  return `<div class="popup-card">
+    <div class="popup-status">
+      <span class="popup-dot" style="background:${statusColor}"></span>
+      <span style="color:${statusColor}">${statusText}</span>
+      <span style="color:var(--muted);font-size:10px;margin-left:auto">since ${ts}</span>
+    </div>
+    ${typeHtml}${tagsHtml}
+    <div class="popup-row" style="font-size:10px;color:var(--muted);margin-bottom:${windowsHtml?'0':'0'}">
+      <span>Zone ${bay.zone??'—'}</span><span>Bay ${bay.id??'—'}</span>
+    </div>
+    ${windowsHtml}
+  </div>`;
+}
+
 function drawMarkers(bays) {
   if (!layerGroup) return;
   layerGroup.clearLayers();
   const zoom = map.getZoom();
   const r = zoom>=16 ? 6 : zoom>=15 ? 4 : 3;
   for (const b of bays) {
-    const color = b.status==='Unoccupied' ? '#00e676' : b.status==='Present' ? '#ff4f4f' : '#555';
+    const color = markerColor(b);
     const m = L.circleMarker([b.lat, b.lon], {
-      radius:r, fillColor:color, fillOpacity:.85, color:'rgba(0,0,0,0.4)', weight:1
+      radius:r, fillColor:color, fillOpacity:.88, color:'rgba(0,0,0,0.35)', weight:1
     });
-    const ts = b.ts ? new Date(b.ts).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}) : '—';
-    m.bindPopup(`<div style="line-height:1.7">
-      <div style="font-weight:500;color:${color}">${b.status==='Unoccupied'?'✓ Available':'✕ Occupied'}</div>
-      <div style="color:#888">Zone: ${b.zone??'—'} · Bay: ${b.id??'—'}</div>
-      <div style="color:#888">Since: ${ts}</div>
-    </div>`, {maxWidth:170});
+    m.bindPopup(buildPopup(b), {maxWidth:220, className:'clean-popup'});
     layerGroup.addLayer(m);
   }
   document.getElementById('map-overlay').classList.add('hidden');
 }
 
+// ══ Zone list ═════════════════════════════════════════════════════════════════
 function renderZones(bays) {
   const zones = {};
   for (const b of bays) {
@@ -401,7 +554,7 @@ function renderZones(bays) {
 
   const el = document.getElementById('zone-list');
   if (!sorted.length) {
-    el.innerHTML='<div style="padding:14px;font-family:var(--mono);font-size:11px;color:var(--muted)">No bays in selection</div>';
+    el.innerHTML='<div style="padding:12px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)">No bays match current filters</div>';
     return;
   }
   el.innerHTML = sorted.map(([name,z])=>{
@@ -431,7 +584,7 @@ function toggleSheet() {
   document.getElementById('sheet-toggle').textContent = sheetOpen?'▼':'▲';
 }
 
-// ── Load live data ────────────────────────────────────────────────────────────
+// ══ Load data ═════════════════════════════════════════════════════════════════
 async function loadLive() {
   try {
     const res = await fetch(LIVE_URL + '?t=' + Date.now());
@@ -447,7 +600,7 @@ async function loadLive() {
       fetched.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
     document.getElementById('live-label').textContent = 'LIVE';
     document.getElementById('footer-status').textContent =
-      `${allBays.length.toLocaleString()} sensors · last fetch ${fetched.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'})}`;
+      `${allBays.length.toLocaleString()} sensors · ${Object.keys(restrictions).length} restrictions loaded`;
     document.getElementById('err').style.display = 'none';
     renderLive();
   } catch(e) {
@@ -458,17 +611,28 @@ async function loadLive() {
   }
 }
 
+async function loadRestrictions() {
+  try {
+    const res = await fetch(RESTRICTIONS_URL + '?t=' + Date.now());
+    if (!res.ok) return; // restrictions optional — silently skip
+    const json = await res.json();
+    restrictions = json.bays || {};
+    console.log(`Restrictions loaded: ${Object.keys(restrictions).length} bays`);
+  } catch(e) {
+    console.warn('Restrictions not available:', e.message);
+  }
+}
+
 async function refreshLive() {
   const icon = document.getElementById('ri');
   icon.classList.add('spinning');
-  document.getElementById('refresh-btn') && (document.querySelector('.refresh-btn').disabled = true);
+  document.querySelector('.refresh-btn').disabled = true;
   await loadLive();
   icon.classList.remove('spinning');
   document.querySelector('.refresh-btn').disabled = false;
 }
 
-// ══ BEST TIMES TAB ════════════════════════════════════════════════════════════
-
+// ══ Best Times tab ════════════════════════════════════════════════════════════
 function hourLabel(h) {
   if (h===0)  return '12am';
   if (h<12)   return `${h}am`;
@@ -477,7 +641,6 @@ function hourLabel(h) {
 }
 
 function heatmapColor(pct) {
-  // pct = % available — high is good (green), low is bad (red)
   if (pct >= 80) return '#0a3d1f';
   if (pct >= 60) return '#1a6b35';
   if (pct >= 45) return '#4caf50';
@@ -487,97 +650,83 @@ function heatmapColor(pct) {
 }
 
 function renderHeatmap(dayData) {
-  const hours = dayData.hours;
   document.getElementById('heatmap-label').textContent =
-    `Busyness by hour — ${dayData.label}`;
-
-  const hm = document.getElementById('heatmap');
-  hm.innerHTML = hours.map((h,i) => {
+    `Availability by hour — ${dayData.label}`;
+  document.getElementById('heatmap').innerHTML = dayData.hours.map(h => {
     const col = heatmapColor(h.pct_avail);
     const sel = selectedHour===h.hour ? ' selected' : '';
     return `<div class="hm-cell${sel}" style="background:${col}"
       onclick="selectHour(${h.hour})"
-      title="${hourLabel(h.hour)} · ${h.pct_avail}% available · ${h.samples} samples"></div>`;
+      title="${hourLabel(h.hour)} · ${h.pct_avail}% avail · ${h.samples} obs"></div>`;
   }).join('');
-
-  const lbl = document.getElementById('hm-labels');
-  lbl.innerHTML = hours.map((h,i) => {
-    const show = h.hour % 3 === 0;
-    return `<div class="hm-label">${show ? hourLabel(h.hour) : ''}</div>`;
-  }).join('');
-
+  document.getElementById('hm-labels').innerHTML = dayData.hours.map(h =>
+    `<div class="hm-label">${h.hour%3===0?hourLabel(h.hour):''}</div>`
+  ).join('');
   updateHourCard(dayData);
 }
 
 function selectHour(hour) {
   selectedHour = hour;
   renderHeatmap(patternsData.days[activeDay]);
-  updateHourCard(patternsData.days[activeDay]);
 }
 
 function updateHourCard(dayData) {
   const hc = document.getElementById('hour-card');
   if (selectedHour === null) {
     document.getElementById('hc-time').textContent = 'Tap any cell above';
-    document.getElementById('hc-sub').textContent  = 'to see busyness detail for that hour';
+    document.getElementById('hc-sub').textContent  = 'to see availability detail for that hour';
     hc.style.borderColor = 'var(--border)';
+    document.getElementById('hc-time').style.color = 'var(--text)';
     return;
   }
-  const h = dayData.hours.find(x => x.hour === selectedHour);
+  const h = dayData.hours.find(x=>x.hour===selectedHour);
   if (!h) return;
   const pct = h.pct_avail;
-  const samples = h.samples || 0;
   const col = pct>=60?'var(--green)':pct>=30?'var(--amber)':'var(--red)';
   const label = pct>=80?'Very easy to park':pct>=60?'Good availability':pct>=30?'Getting busy':pct>=15?'Hard to find a spot':'Avoid — very busy';
-  const sampleNote = samples > 0 ? ` · ${samples} observations` : ' · no data yet';
-  document.getElementById('hc-time').textContent = `${hourLabel(selectedHour)} on ${dayData.label}`;
-  document.getElementById('hc-sub').textContent  = `${label} · ${pct}% available${sampleNote}`;
+  const obs = h.samples>0 ? `${h.samples} obs` : 'no data yet';
+  document.getElementById('hc-time').textContent = `${hourLabel(selectedHour)} · ${dayData.label}`;
+  document.getElementById('hc-sub').textContent  = `${label} · ${pct}% available · ${obs}`;
   document.getElementById('hc-time').style.color = col;
   hc.style.borderColor = col;
-}
-
-function renderDaySummary() {
-  const el = document.getElementById('day-summary');
-  el.innerHTML = patternsData.days.map(d => {
-    const range = d.best_hour.pct_avail - d.worst_hour.pct_avail;
-    return `<div class="ds-row" onclick="selectDay(${d.day})" style="cursor:pointer">
-      <div class="ds-day">${d.label}</div>
-      <div class="ds-best">Best ${d.best_hour.label}</div>
-      <div class="ds-bar-wrap"><div class="ds-bar" style="width:${100 - d.worst_hour.pct_avail}%"></div></div>
-      <div class="ds-worst">Busy ${d.worst_hour.label}</div>
-    </div>`;
-  }).join('');
 }
 
 function selectDay(dow) {
   activeDay = dow;
   selectedHour = null;
-  document.querySelectorAll('.day-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.day)===dow));
+  document.querySelectorAll('.day-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.day)===dow));
   renderHeatmap(patternsData.days[dow]);
 }
 
 function renderPatterns() {
   const p = patternsData;
+  document.getElementById('p-snap-count').textContent = (p.total_snapshots||0).toLocaleString();
   document.getElementById('p-best-time').textContent  = p.overall_best.hour_label;
-  document.getElementById('p-best-day').textContent   = p.overall_best.day_label + ` · ${p.overall_best.pct}% available`;
+  document.getElementById('p-best-day').textContent   = `${p.overall_best.day_label} · ${p.overall_best.pct}% avail`;
   document.getElementById('p-worst-time').textContent = p.overall_worst.hour_label;
-  document.getElementById('p-worst-day').textContent  = p.overall_worst.day_label + ` · ${p.overall_worst.pct}% available`;
+  document.getElementById('p-worst-day').textContent  = `${p.overall_worst.day_label} · ${p.overall_worst.pct}% avail`;
 
-  document.getElementById('p-snap-count').textContent = (p.total_snapshots || 0).toLocaleString();
-  const scroll = document.getElementById('day-scroll');
-  scroll.innerHTML = p.days.map(d =>
+  document.getElementById('day-scroll').innerHTML = p.days.map(d =>
     `<button class="day-btn${d.day===activeDay?' active':''}" data-day="${d.day}" onclick="selectDay(${d.day})">${d.label}</button>`
   ).join('');
 
   renderHeatmap(p.days[activeDay]);
-  renderDaySummary();
+
+  document.getElementById('day-summary').innerHTML = p.days.map(d =>
+    `<div class="ds-row" onclick="selectDay(${d.day})">
+      <div class="ds-day">${d.label}</div>
+      <div class="ds-best">Best ${d.best_hour.label}</div>
+      <div class="ds-bar-wrap"><div class="ds-bar" style="width:${100-d.worst_hour.pct_avail}%"></div></div>
+      <div class="ds-worst">Busy ${d.worst_hour.label}</div>
+    </div>`
+  ).join('');
 
   document.getElementById('patterns-loading').style.display = 'none';
   document.getElementById('patterns-content').style.display = 'block';
 }
 
 async function loadPatterns() {
-  document.getElementById('patterns-loading').textContent = 'Loading historical patterns…';
+  document.getElementById('patterns-loading').textContent = 'Loading patterns…';
   try {
     const res = await fetch(PATTERNS_URL + '?t=' + Date.now());
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -585,37 +734,51 @@ async function loadPatterns() {
     renderPatterns();
   } catch(e) {
     document.getElementById('patterns-loading').innerHTML =
-      `<div>No historical patterns yet.</div>
-       <div style="margin-top:8px;font-size:11px">Run <span style="color:var(--accent)">fetch_history.py</span> once to generate data/patterns.json</div>`;
+      `<div>No patterns yet.</div>
+       <div style="margin-top:8px;font-size:11px">Run <span style="color:var(--accent)">fetch_history.py</span> after<br>collecting a few days of snapshots.</div>`;
   }
 }
 
-// ── Shared helpers ────────────────────────────────────────────────────────────
+// ══ Tab switching ═════════════════════════════════════════════════════════════
+function showTab(tab, btn) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-live').classList.toggle('hidden', tab!=='live');
+  document.getElementById('tab-patterns').classList.toggle('active', tab==='patterns');
+  if (tab==='patterns' && !patternsData) loadPatterns();
+  if (tab==='live' && map) setTimeout(()=>map.invalidateSize(), 50);
+}
+
+// ══ Shared ════════════════════════════════════════════════════════════════════
 function showErr(msg) {
   const el = document.getElementById('err');
   el.style.display = 'block';
-  el.textContent = msg;
+  el.textContent   = msg;
 }
 
-// ── Map init ──────────────────────────────────────────────────────────────────
+// ══ Map init ══════════════════════════════════════════════════════════════════
 function initMap() {
   map = L.map('map', {center:[-37.814,144.963], zoom:14, zoomControl:false});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom:19, attribution:'© OpenStreetMap contributors'
   }).addTo(map);
   layerGroup = L.layerGroup().addTo(map);
-  map.on('zoomend', () => drawMarkers(filteredBays()));
+  map.on('zoomend', ()=>drawMarkers(filteredBays()));
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
-window.addEventListener('load', () => {
+// ══ Boot ══════════════════════════════════════════════════════════════════════
+window.addEventListener('load', async () => {
   if (typeof L === 'undefined') {
-    showErr('Map library failed to load. Check your internet connection.');
+    showErr('Map library failed to load — check internet connection.');
     document.getElementById('loading').classList.add('hidden');
+    await loadRestrictions();
     loadLive();
     return;
   }
   initMap();
+  // Load restrictions first so popups are ready when map renders
+  await loadRestrictions();
   loadLive();
 });
 </script>
